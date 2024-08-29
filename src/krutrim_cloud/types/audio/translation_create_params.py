@@ -17,8 +17,6 @@ class TranslationCreateParams(TypedDict, total=False):
 
     model_name: Annotated[str, PropertyInfo(alias="modelName")]
 
-    response_format: Annotated[Optional[str], PropertyInfo(alias="responseFormat")]
-
     task: str
 
     temperature: Optional[float]

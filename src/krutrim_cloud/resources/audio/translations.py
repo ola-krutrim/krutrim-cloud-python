@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Optional, Union, Dict, Any, List
 
 import httpx
 
@@ -22,11 +22,20 @@ from ..._response import (
 from ...types.audio import translation_create_params
 from ..._base_client import make_request_options
 from ...types.shared.whisper_response import WhisperResponse
+from ...lib.utils import convert_audio_file_to_base64
+from pathlib import Path
+from pydub import AudioSegment  # type: ignore
+from pydub.exceptions import CouldntDecodeError  # type: ignore
+from os import sep
+import shutil
 
 __all__ = ["TranslationsResource", "AsyncTranslationsResource"]
 
 
 class TranslationsResource(SyncAPIResource):
+    tmp_path = Path("./tmp_audio_store")
+    tmp_filename_prefix = "audio-chunk"
+
     @cached_property
     def with_raw_response(self) -> TranslationsResourceWithRawResponse:
         return TranslationsResourceWithRawResponse(self)
@@ -37,20 +46,21 @@ class TranslationsResource(SyncAPIResource):
 
     def validate_parameters(
         self,
-        file: str | Union[object, None],
+        file: str | Path | AudioSegment | Union[object, None],
         language: Optional[str] | Union[object, None],
         model_name: str | Union[object, None],
-        response_format: Optional[str] | Union[object, None],
         task: str | Union[object, None],
         temperature: Optional[float] | Union[object, None],
         timeout: Union[float, httpx.Timeout, None, object],
     ):
         # Validate file
         if file is not NOT_GIVEN:
-            if not isinstance(file, str):
-                raise ValueError("'file' must be a string.")
+            if not isinstance(file, (str, Path, AudioSegment)):
+                raise ValueError(
+                    "'file' must be a string or Path object from pathlib or AudioSegment object from pydub."
+                )
             if not file:
-                raise ValueError("'file' cannot be empty.")
+                raise ValueError("'file' cannot be empty or None.")
 
         # Validate language
         if language is not NOT_GIVEN:
@@ -70,11 +80,6 @@ class TranslationsResource(SyncAPIResource):
                 raise ValueError("'model_name' must be a string.")
             if not model_name:
                 raise ValueError("'model_name' cannot be empty.")
-
-        # Validate response_format
-        if response_format is not NOT_GIVEN:
-            if response_format not in ("json", "verbose_json"):
-                raise ValueError("'response_format' must be 'json' or 'verbose_json'")
 
         # Validate task
         if task is not NOT_GIVEN:
@@ -101,13 +106,93 @@ class TranslationsResource(SyncAPIResource):
 
         return language
 
+    def _send_post_request(self, payload: Dict[str, Any], extra_options: Dict[str, Any]):
+        return self._post(
+            "/v1/audio/translations",
+            body=maybe_transform(
+                payload,
+                translation_create_params.TranslationCreateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_options["extra_headers"],
+                extra_query=extra_options["extra_query"],
+                extra_body=extra_options["extra_body"],
+                timeout=extra_options["timeout"],
+            ),
+            cast_to=WhisperResponse,
+        )
+
+    def _merge_predictions(self, dicts: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Merges a list of predictions that contain `text` and `chunks`(if present) keys.
+
+        This function combines the `text` values from each prediction into a single string,
+        separated by spaces. It also merges the `chunks` lists from each prediction into a
+        single list, preserving the order of chunks as they appear in the input dictionaries.
+
+        Parameters:
+        -----------
+        dicts : List[Dict[str, Any]]
+            A list of predictions to be merged. Each prediction should contain the keys
+            'text' (a string) and 'chunks' (a list of dictionaries with `timestamp` and `text`).
+
+        Returns:
+        --------
+        Dict[str, Any]
+            A single dictionary with the merged `text` and `chunks` values.
+
+        Example:
+        --------
+        >>> dict_1 = {
+        ...     "text": "Hello, this is the first text.",
+        ...     "chunks": [
+        ...         {"timestamp": [0.0, 3.0], "text": "Hello, this"},
+        ...         {"timestamp": [3.0, 7.0], "text": "is the first text."}
+        ...     ]
+        ... }
+        >>> dict_2 = {
+        ...     "text": "And here is the second text.",
+        ...     "chunks": [
+        ...         {"timestamp": [0.0, 4.0], "text": "And here"},
+        ...         {"timestamp": [4.0, 8.0], "text": "is the second text."}
+        ...     ]
+        ... }
+        >>> _merge_predictions([dict_1, dict_2])
+        {
+            'text': 'Hello, this is the first text. And here is the second text.',
+            'chunks': [
+                {"timestamp": [0.0, 3.0], "text": "Hello, this"},
+                {"timestamp": [3.0, 7.0], "text": "is the first text."},
+                {"timestamp": [0.0, 4.0], "text": "And here"},
+                {"timestamp": [4.0, 8.0], "text": "is the second text."}
+            ]
+        }
+        """
+        merged_dict: Dict[str, Any]
+
+        if "chunks" in dicts[0]:
+            merged_dict = {"text": "", "chunks": []}
+        else:
+            merged_dict = {"text": ""}
+
+        for data_dict in dicts:
+            # Ensure that the current dictionary has the expected keys
+            if "text" in data_dict:
+                merged_dict["text"] += data_dict.get("text", "") + " "
+            if "chunks" in data_dict:
+                merged_dict["chunks"].extend(data_dict.get("chunks", []))
+
+        # Clean up the trailing space in the merged 'text'
+        merged_dict["text"] = merged_dict["text"].strip()
+
+        return merged_dict
+
     def create(
         self,
         *,
-        file: str | NotGiven = NOT_GIVEN,
+        file: str | Path | AudioSegment | NotGiven = NOT_GIVEN,
         language: Optional[str] | NotGiven = NOT_GIVEN,
         model_name: str | NotGiven = NOT_GIVEN,
-        response_format: Optional[str] | NotGiven = NOT_GIVEN,
         task: str | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -116,20 +201,18 @@ class TranslationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
-    ) -> WhisperResponse:
+    ) -> WhisperResponse:  # type: ignore
         """
         Generate Audio Translation
 
         Args:
-            file:"<your encoded audio byte data here>", # Refer to fetch audio bytes from audio file section
+            file:"<your base64 encoded audio byte data here>" OR "Path object of pathlib for the audio filepath"
 
             modelName: "openai/whisper-large-v3", # DO NOT CHANGE this
 
             task: "translate"
 
             temperature: 0.0, # Optional, defaults to 0.0. Range - 0.0 to 2.0
-
-            responseFormat: "json", # Optional, defaults to json. Values - verbose_json (or) json
 
             extra_headers: Send extra headers
 
@@ -144,33 +227,81 @@ class TranslationsResource(SyncAPIResource):
             file=file,
             language=language,
             model_name=model_name,
-            response_format=response_format,
             task=task,
             temperature=temperature,
             timeout=timeout,
         )
+        payload = {
+            "file": file,
+            "language": language,
+            "model_name": model_name,
+            "task": task,
+            "temperature": temperature,
+        }
+        extra_options = {
+            "extra_headers": extra_headers,
+            "extra_query": extra_query,
+            "extra_body": extra_body,
+            "timeout": timeout,
+        }
+        tmp_filepath = None
 
-        return self._post(
-            "/v1/audio/translations",
-            body=maybe_transform(
-                {
-                    "file": file,
-                    "language": language,
-                    "model_name": model_name,
-                    "response_format": response_format,
-                    "task": task,
-                    "temperature": temperature,
-                },
-                translation_create_params.TranslationCreateParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=WhisperResponse,
-        )
+        if isinstance(file, str):
+            return self._send_post_request(payload, extra_options)
+        elif isinstance(file, Path) or isinstance(file, AudioSegment):
+            try:
+                if isinstance(file, Path):
+                    audio_data = AudioSegment.from_file(file)  # type: ignore
+                else:
+                    audio_data = file  # type: ignore
+                audio_data_duration: float = audio_data.duration_seconds  # type: ignore
+
+                Path.mkdir(self.tmp_path, exist_ok=True)
+                tmp_filepath = f"{self.tmp_path.as_posix()}{sep}{self.tmp_filename_prefix}.mp3"
+                if audio_data_duration <= 120.0:  # Less then or equal to 2 minutes audio
+                    with open(tmp_filepath, "wb") as file_object:
+                        audio_data.export(file_object, format="mp3")  # type: ignore
+
+                    audio_b64_data = convert_audio_file_to_base64(tmp_filepath)
+                    payload["file"] = audio_b64_data
+                    shutil.rmtree(self.tmp_path.as_posix())
+                    return self._send_post_request(payload, extra_options)
+                else:
+                    audio_data_chunks = audio_data[::120000]  # type: ignore # chunking with interval of 120 seconds
+                    predictions: List[Dict[str, Any]] = []
+                    for index, audio_data_chunk in enumerate(audio_data_chunks):  # type: ignore
+                        tmp_filepath = f"{self.tmp_path.as_posix()}{sep}{self.tmp_filename_prefix}-{index}.mp3"
+                        with open(tmp_filepath, "wb") as f:
+                            audio_data_chunk.export(f, format="mp3")  # type: ignore
+
+                        audio_b64_data = convert_audio_file_to_base64(tmp_filepath)
+                        payload["file"] = audio_b64_data
+                        predictions.append(self._send_post_request(payload, extra_options).predictions)  # type: ignore
+                    shutil.rmtree(self.tmp_path.as_posix())
+                    whisperResponse = WhisperResponse(predictions=None)
+                    whisperResponse.predictions = self._merge_predictions(predictions)
+                    return whisperResponse
+            except CouldntDecodeError as decode_error:
+                if isinstance(file, Path):
+                    raise CouldntDecodeError(
+                        f"The file '{file.as_posix()}' is not a valid or supported audio file format.\n{decode_error}"
+                    )
+                else:
+                    raise CouldntDecodeError(f"The file is not a valid or supported audio file format.\n{decode_error}")
+            except FileNotFoundError as fnf_error:
+                raise FileNotFoundError(f"Error: The file '{tmp_filepath}' was not found. {fnf_error}")
+
+            except ValueError as val_error:
+                raise ValueError(f"{val_error}")
+
+            except Exception as exc:
+                raise Exception(exc)
 
 
 class AsyncTranslationsResource(AsyncAPIResource):
+    tmp_path = Path("./tmp_audio_store")
+    tmp_filename_prefix = "audio-chunk"
+
     @cached_property
     def with_raw_response(self) -> AsyncTranslationsResourceWithRawResponse:
         return AsyncTranslationsResourceWithRawResponse(self)
@@ -181,20 +312,21 @@ class AsyncTranslationsResource(AsyncAPIResource):
 
     async def validate_parameters(
         self,
-        file: str | Union[object, None],
+        file: str | Path | AudioSegment | Union[object, None],
         language: Optional[str] | Union[object, None],
         model_name: str | Union[object, None],
-        response_format: Optional[str] | Union[object, None],
         task: str | Union[object, None],
         temperature: Optional[float] | Union[object, None],
         timeout: Union[float, httpx.Timeout, None, object],
     ):
         # Validate file
         if file is not NOT_GIVEN:
-            if not isinstance(file, str):
-                raise ValueError("'file' must be a string.")
+            if not isinstance(file, (str, Path, AudioSegment)):
+                raise ValueError(
+                    "'file' must be a string or Path object from pathlib or AudioSegment object from pydub."
+                )
             if not file:
-                raise ValueError("'file' cannot be empty.")
+                raise ValueError("'file' cannot be empty or None.")
 
         # Validate language
         if language is not NOT_GIVEN:
@@ -214,11 +346,6 @@ class AsyncTranslationsResource(AsyncAPIResource):
                 raise ValueError("'model_name' must be a string.")
             if not model_name:
                 raise ValueError("'model_name' cannot be empty.")
-
-        # Validate response_format
-        if response_format is not NOT_GIVEN:
-            if response_format not in ("json", "verbose_json"):
-                raise ValueError("'response_format' must be 'json' or 'verbose_json'")
 
         # Validate task
         if task is not NOT_GIVEN:
@@ -245,13 +372,93 @@ class AsyncTranslationsResource(AsyncAPIResource):
 
         return language
 
+    async def _send_post_request(self, payload: Dict[str, Any], extra_options: Dict[str, Any]):
+        return await self._post(
+            "/v1/audio/translations",
+            body=await async_maybe_transform(
+                payload,
+                translation_create_params.TranslationCreateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_options["extra_headers"],
+                extra_query=extra_options["extra_query"],
+                extra_body=extra_options["extra_body"],
+                timeout=extra_options["timeout"],
+            ),
+            cast_to=WhisperResponse,
+        )
+
+    async def _merge_predictions(self, dicts: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Merges a list of predictions that contain `text` and `chunks`(if present) keys.
+
+        This function combines the `text` values from each prediction into a single string,
+        separated by spaces. It also merges the `chunks` lists from each prediction into a
+        single list, preserving the order of chunks as they appear in the input dictionaries.
+
+        Parameters:
+        -----------
+        dicts : List[Dict[str, Any]]
+            A list of predictions to be merged. Each prediction should contain the keys
+            'text' (a string) and 'chunks' (a list of dictionaries with `timestamp` and `text`).
+
+        Returns:
+        --------
+        Dict[str, Any]
+            A single dictionary with the merged `text` and `chunks` values.
+
+        Example:
+        --------
+        >>> dict_1 = {
+        ...     "text": "Hello, this is the first text.",
+        ...     "chunks": [
+        ...         {"timestamp": [0.0, 3.0], "text": "Hello, this"},
+        ...         {"timestamp": [3.0, 7.0], "text": "is the first text."}
+        ...     ]
+        ... }
+        >>> dict_2 = {
+        ...     "text": "And here is the second text.",
+        ...     "chunks": [
+        ...         {"timestamp": [0.0, 4.0], "text": "And here"},
+        ...         {"timestamp": [4.0, 8.0], "text": "is the second text."}
+        ...     ]
+        ... }
+        >>> _merge_predictions([dict_1, dict_2])
+        {
+            'text': 'Hello, this is the first text. And here is the second text.',
+            'chunks': [
+                {"timestamp": [0.0, 3.0], "text": "Hello, this"},
+                {"timestamp": [3.0, 7.0], "text": "is the first text."},
+                {"timestamp": [0.0, 4.0], "text": "And here"},
+                {"timestamp": [4.0, 8.0], "text": "is the second text."}
+            ]
+        }
+        """
+        merged_dict: Dict[str, Any]
+
+        if "chunks" in dicts[0]:
+            merged_dict = {"text": "", "chunks": []}
+        else:
+            merged_dict = {"text": ""}
+
+        for data_dict in dicts:
+            # Ensure that the current dictionary has the expected keys
+            if "text" in data_dict:
+                merged_dict["text"] += data_dict.get("text", "") + " "
+            if "chunks" in data_dict:
+                merged_dict["chunks"].extend(data_dict.get("chunks", []))
+
+        # Clean up the trailing space in the merged 'text'
+        merged_dict["text"] = merged_dict["text"].strip()
+
+        return merged_dict
+
     async def create(
         self,
         *,
-        file: str | NotGiven = NOT_GIVEN,
+        file: str | Path | NotGiven = NOT_GIVEN,
         language: Optional[str] | NotGiven = NOT_GIVEN,
         model_name: str | NotGiven = NOT_GIVEN,
-        response_format: Optional[str] | NotGiven = NOT_GIVEN,
         task: str | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -260,12 +467,12 @@ class AsyncTranslationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
-    ) -> WhisperResponse:
+    ) -> WhisperResponse:  # type: ignore
         """
         Generate Audio Translation
 
         Args:
-            file:"<your encoded audio byte data here>", # Refer to fetch audio bytes from audio file section
+            file:"<your base64 encoded audio byte data here>" OR "Path object of pathlib for the audio filepath"
 
             modelName: "openai/whisper-large-v3", # DO NOT CHANGE this
 
@@ -274,8 +481,6 @@ class AsyncTranslationsResource(AsyncAPIResource):
             language: default is "english"
 
             temperature: 0.0, # Optional, defaults to 0.0. Range - 0.0 to 2.0
-
-            responseFormat: "json", # Optional, defaults to json. Values - verbose_json (or) json
 
             extra_headers: Send extra headers
 
@@ -290,30 +495,76 @@ class AsyncTranslationsResource(AsyncAPIResource):
             file=file,
             language=language,
             model_name=model_name,
-            response_format=response_format,
             task=task,
             temperature=temperature,
             timeout=timeout,
         )
 
-        return await self._post(
-            "/v1/audio/translations",
-            body=await async_maybe_transform(
-                {
-                    "file": file,
-                    "language": language,
-                    "model_name": model_name,
-                    "response_format": response_format,
-                    "task": task,
-                    "temperature": temperature,
-                },
-                translation_create_params.TranslationCreateParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=WhisperResponse,
-        )
+        payload = {
+            "file": file,
+            "language": language,
+            "model_name": model_name,
+            "task": task,
+            "temperature": temperature,
+        }
+        extra_options = {
+            "extra_headers": extra_headers,
+            "extra_query": extra_query,
+            "extra_body": extra_body,
+            "timeout": timeout,
+        }
+        tmp_filepath = None
+
+        if isinstance(file, str):
+            return await self._send_post_request(payload, extra_options)
+        elif isinstance(file, Path) or isinstance(file, AudioSegment):
+            try:
+                if isinstance(file, Path):
+                    audio_data = AudioSegment.from_file(file)  # type: ignore
+                else:
+                    audio_data = file  # type: ignore
+                audio_data_duration: float = audio_data.duration_seconds  # type: ignore
+
+                Path.mkdir(self.tmp_path, exist_ok=True)
+                tmp_filepath = f"{self.tmp_path.as_posix()}{sep}{self.tmp_filename_prefix}.mp3"
+                if audio_data_duration <= 120.0:  # Less then or equal to 2 minutes audio
+                    with open(tmp_filepath, "wb") as file_object:
+                        audio_data.export(file_object, format="mp3")  # type: ignore
+
+                    audio_b64_data = convert_audio_file_to_base64(tmp_filepath)
+                    payload["file"] = audio_b64_data
+                    shutil.rmtree(self.tmp_path.as_posix())
+                    return await self._send_post_request(payload, extra_options)
+                else:
+                    audio_data_chunks = audio_data[::120000]  # type: ignore # chunking with interval of 120 seconds
+                    predictions: List[Dict[str, Any]] = []
+                    for index, audio_data_chunk in enumerate(audio_data_chunks):  # type: ignore
+                        tmp_filepath = f"{self.tmp_path.as_posix()}{sep}{self.tmp_filename_prefix}-{index}.mp3"
+                        with open(tmp_filepath, "wb") as f:
+                            audio_data_chunk.export(f, format="mp3")  # type: ignore
+
+                        audio_b64_data = convert_audio_file_to_base64(tmp_filepath)
+                        payload["file"] = audio_b64_data
+                        predictions.append(self._send_post_request(payload, extra_options).predictions)  # type: ignore
+                    shutil.rmtree(self.tmp_path.as_posix())
+                    whisperResponse = WhisperResponse(predictions=None)
+                    whisperResponse.predictions = self._merge_predictions(predictions)
+                    return whisperResponse
+            except CouldntDecodeError as decode_error:
+                if isinstance(file, Path):
+                    raise CouldntDecodeError(
+                        f"The file '{file.as_posix()}' is not a valid or supported audio file format.\n{decode_error}"
+                    )
+                else:
+                    raise CouldntDecodeError(f"The file is not a valid or supported audio file format.\n{decode_error}")
+            except FileNotFoundError as fnf_error:
+                raise FileNotFoundError(f"Error: The file '{tmp_filepath}' was not found. {fnf_error}")
+
+            except ValueError as val_error:
+                raise ValueError(f"{val_error}")
+
+            except Exception as exc:
+                raise Exception(exc)
 
 
 class TranslationsResourceWithRawResponse:

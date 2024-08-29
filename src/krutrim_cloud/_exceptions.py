@@ -122,3 +122,9 @@ class TimeRetrievalError(Exception):
 
 class KrutrimCloudError(Exception):
     pass
+
+
+class CouldNotDecodeError(Exception):
+    """Custom exception for data decoding errors."""
+
+    pass

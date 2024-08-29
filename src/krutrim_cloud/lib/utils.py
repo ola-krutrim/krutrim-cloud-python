@@ -2,8 +2,12 @@ import base64
 from PIL import Image
 import io
 import os
+import cv2
+import numpy as np
 from datetime import datetime
-from krutrim_cloud._exceptions import TimeRetrievalError
+from krutrim_cloud._exceptions import TimeRetrievalError, CouldNotDecodeError
+from pydub import AudioSegment  # type: ignore
+from pydub.exceptions import CouldntDecodeError  # type: ignore
 
 
 def convert_base64_to_PIL_img(base64_data: str) -> Image.Image:
@@ -36,6 +40,43 @@ def convert_base64_to_PIL_img(base64_data: str) -> Image.Image:
         raise IOError("Cannot convert base64 data to an image") from e
 
     return image
+
+
+def convert_base64_to_OpenCV_img(base64_str: str):
+    """
+    Convert a base64 string to an OpenCV image.
+
+    Args:
+        base64_str (str): The base64 string of the image
+
+    Returns:
+        An OpenCV image (NumPy array)
+    """
+    try:
+        # Decode the base64 string to binary data
+        image_data = base64.b64decode(base64_str)
+    except base64.binascii.Error as e:
+        raise ValueError("Invalid base64 string") from e
+
+    try:
+        # Convert the binary data to a NumPy array
+        np_arr = np.frombuffer(image_data, np.uint8)
+
+        # Check if the conversion to a NumPy array was successful
+        if np_arr.size == 0:
+            raise CouldNotDecodeError("Error: The decoded data could not be converted to a NumPy array.")
+
+        # Decode the NumPy array into an OpenCV image
+        opencv_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        # Check if the decoding was successful
+        if opencv_image is None:
+            raise CouldNotDecodeError("Error: The NumPy array could not be decoded into an OpenCV image.")
+
+    except Exception as e:
+        raise Exception(f"An error occurred while converting the base64 data to an OpenCV image: {e}")
+
+    return opencv_image
 
 
 def save_PIL_img(PIL_image_obj: Image.Image, output_dirpath: str, filename: str) -> None:
@@ -185,6 +226,40 @@ def convert_PIL_image_to_base64(PIL_image_obj: Image.Image, format: str = "JPEG"
         raise OSError(f"Failed to encode the image to base64: {e}")
 
 
+def validate_audio_file(file_path: str) -> bool:
+    """
+    Validates whether the input file is a valid audio file.
+
+    Parameters:
+    -----------
+    file_path : str
+        The path to the audio file to be validated.
+
+    Returns:
+    --------
+    bool
+        True if the file is a valid audio file, False otherwise.
+
+    Raises:
+    -------
+    FileNotFoundError:
+        If the input audio file does not exist.
+    """
+    try:
+        # Attempt to load the file using pydub
+        _ = AudioSegment.from_file(file_path)  # type: ignore
+        return True
+
+    except FileNotFoundError:
+        raise  # Re-raise the exception to handle it in the calling context
+
+    except CouldntDecodeError:
+        raise  # Re-raise the exception to handle it in the calling context
+
+    except Exception:
+        raise  # Re-raise the exception to handle it in the calling context
+
+
 def convert_audio_file_to_base64(audio_filepath: str) -> str:
     """
     Convert an audio file to a base64 encoded string.
@@ -208,13 +283,17 @@ def convert_audio_file_to_base64(audio_filepath: str) -> str:
         raise ValueError("audio_filepath must be a valid string.")
 
     try:
-        with open(audio_filepath, "rb") as audio_file:
-            audio_data = audio_file.read()
+        if validate_audio_file(audio_filepath):
+            with open(audio_filepath, "rb") as audio_file:
+                audio_data = audio_file.read()
     except FileNotFoundError as e:
         raise FileNotFoundError(f"Audio file '{audio_filepath}' not found: {e}")
     except OSError as e:
         raise OSError(f"Error reading the audio file '{audio_filepath}': {e}")
-
+    except CouldntDecodeError as decode_error:
+        raise CouldntDecodeError(
+            f"The file '{audio_filepath}' is not a valid or supported audio file format.\n{decode_error}"
+        )
     try:
         # Encode the audio data to base64
         return base64.b64encode(audio_data).decode("utf-8")

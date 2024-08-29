@@ -91,7 +91,7 @@ Methods:
 
     Parameter List:
     
-    `file`: str : "your encoded audio byte data here", # encoded audio byte data
+    `file`: str | Path | AudioSegment: "your base64 encoded audio byte data here" OR "Path object of pathlib for the audio filepath" OR "PyDub AudioSegment object of Audio/Video"
     
     `model_name`: str : "openai/whisper-large-v3", # DO NOT CHANGE THIS
     
@@ -119,15 +119,13 @@ Methods:
 
     Parameters List:
 
-    `file`: str :"your encoded audio byte data here",  # encoded audio byte data
+    `file`: str | Path | AudioSegment: "your base64 encoded audio byte data here" OR "Path object of pathlib for the audio filepath" OR "PyDub AudioSegment object of Audio/Video"
 
     `model_name`: str: "openai/whisper-large-v3", # DO NOT CHANGE THIS
 
     `task`: str: "translate" # DO NOT CHANGE THIS
 
     `temperature`: float : 0.0, # Optional, defaults to 0.0. Range - 0.0 to 2.0
-
-    `response_format`: str : "json", # Optional, defaults to json. Values - `verbose_json` (or) `json`
 
 # Chat
 

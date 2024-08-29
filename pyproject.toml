@@ -1,6 +1,6 @@
 [project]
 name = "krutrim_cloud"
-version = "0.1.0"
+version = "0.2.0"
 description = "The official Python library for the Krutrim Cloud API"
 readme = "README.md"
 license = {"file" = "LICENSE"}
@@ -16,7 +16,10 @@ dependencies = [
     "sniffio",
     "cached-property; python_version < '3.8'",
     "pillow>=9.3.0",
-    "python-dotenv"
+    "python-dotenv",
+    "pydub>=0.25.1",
+    "numpy>=2.1.0",
+    "opencv-python>=4.10.0"
 ]
 requires-python = ">= 3.7"
 classifiers = [

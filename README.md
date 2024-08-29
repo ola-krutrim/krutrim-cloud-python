@@ -3,7 +3,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/krutrim_cloud.svg)](https://pypi.org/project/krutrim_cloud/)
 
 The Krutrim Cloud Python library provides convenient access to the Krutrim Cloud REST API from any Python 3.7+
-application. The library includes type definitions for all request params and response fields,
+application (3.10+ recommended). The library includes type definitions for all request params and response fields,
 and offers both synchronous and asynchronous clients powered by [httpx](https://github.com/encode/httpx).
 
 It is generated with [Stainless](https://www.stainlessapi.com/).
@@ -21,6 +21,22 @@ The full API of this library can be found in [api.md](api.md).
 ```sh
 pip install krutrim-cloud
 ```
+
+## Dependencies
+
+Python dependencies are handled during the installation of the krutrim-cloud package via pip command. Though there
+ are some dependencies need to be installed manually.
+
+- FFmpeg (Examples tested on v7.0.2) - Install for your OS from suitable options given in 
+[official website](https://www.ffmpeg.org/download.html)
+- FFprobe (Examples tested on v7.0.2) - Needs to be installed separately in case of Mac OS - Install as given in 
+[official website](https://www.ffmpeg.org/download.html#build-mac)
+
+    For Ubuntu:
+    ```sh
+    sudo apt-get update
+    sudo apt-get install ffmpeg
+    ```
 
 ## Usage
 
