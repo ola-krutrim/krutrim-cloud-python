@@ -37,6 +37,16 @@ Python dependencies are handled during the installation of the krutrim-cloud pac
     sudo apt-get update
     sudo apt-get install ffmpeg
     ```
+## Examples
+
+To help you get started quickly with using our SDK and the hosted LLM models on Krutrim Cloud, we have provided 
+a set of example scripts. These examples demonstrate how to use various features and functions of the SDK, 
+including how to interact with different models and perform inference.
+
+Model Inference: [Model Inference Examples](examples/models)
+
+Resources directory: [Sample Resources](examples/resources)
+
 
 ## Usage
 
