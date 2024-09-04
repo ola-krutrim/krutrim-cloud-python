@@ -39,7 +39,7 @@ Python dependencies are handled during the installation of the krutrim-cloud pac
     ```
 ## Examples
 
-To help you get started quickly with using our SDK and the hosted LLM models on Krutrim Cloud, we have provided 
+To help you get started quickly with using our SDK and the hosted models on Krutrim Cloud, we have provided 
 a set of example scripts. These examples demonstrate how to use various features and functions of the SDK, 
 including how to interact with different models and perform inference.
 
