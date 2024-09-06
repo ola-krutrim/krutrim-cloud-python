@@ -139,7 +139,7 @@ from krutrim_cloud.types.chat import CompletionCreateResponse
 
 Methods:
 
-- <code title="post /v1/chat/completions">client.chat.completions.<a href="./src/demo_project/resources/chat/completions.py">create</a>(\*\*<a href="src/demo_project/types/chat/completion_create_params.py">params</a>) -> <a href="./src/demo_project/types/chat/completion_create_response.py">CompletionCreateResponse</a></code>
+- <code title="post /v1/chat/completions">client.chat.completions.<a href="./src/krutrim_cloud/resources/chat/completions.py">create</a>(\*\*<a href="src/krutrim_cloud/types/chat/completion_create_params.py">params</a>) -> <a href="./src/krutrim_cloud/types/chat/completion_create_response.py">CompletionCreateResponse</a></code>
 
     Parameter List:
 
