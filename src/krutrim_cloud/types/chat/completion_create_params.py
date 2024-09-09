@@ -37,6 +37,8 @@ class CompletionCreateParams(TypedDict, total=False):
 
     top_p: float
 
+    skip_special_tokens: bool
+
 
 class Message(TypedDict, total=False):
     content: Required[str]

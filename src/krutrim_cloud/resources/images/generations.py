@@ -67,14 +67,14 @@ class GenerationsResource(SyncAPIResource):
         # Validate image_height
         if not isinstance(image_height, int):  # type: ignore
             raise ValueError("'image_height' must be an integer.")
-        if not (8 <= image_height <= 1024):
-            raise ValueError("'image_height' must be between 8 and 1024.")
+        if not (256 <= image_height <= 2048):
+            raise ValueError("'image_height' must be between 256 and 2048 (inclusive).")
 
         # Validate image_width
         if not isinstance(image_width, int):  # type: ignore
             raise ValueError("'image_width' must be an integer.")
-        if not (8 <= image_width <= 1024):
-            raise ValueError("'image_width' must be between 8 and 1024.")
+        if not (256 <= image_width <= 2048):
+            raise ValueError("'image_width' must be between 256 and 2048 (inclusive).")
 
         # Validate negative_prompt
         if negative_prompt is not NOT_GIVEN:
@@ -99,14 +99,14 @@ class GenerationsResource(SyncAPIResource):
             if not isinstance(num_inference_steps, int):
                 raise ValueError("'num_inference_steps' must be an integer.")
             if not (1 <= num_inference_steps <= 100):
-                raise ValueError("'num_inference_steps' must be between 1 and 100.")
+                raise ValueError("'num_inference_steps' must be between 1 and 100 (inclusive).")
 
         # Validate num_output_images
         if num_output_images is not NOT_GIVEN:
             if not isinstance(num_output_images, int):
                 raise ValueError("'num_output_images' must be an integer.")
             if not (1 <= num_output_images <= 5):
-                raise ValueError("'num_output_images' must be between 1 and 5.")
+                raise ValueError("'num_output_images' must be between 1 and 5 (inclusive).")
 
         # Validate output_img_type
         if output_img_type is not NOT_GIVEN:
@@ -282,14 +282,14 @@ class AsyncGenerationsResource(AsyncAPIResource):
         # Validate image_height
         if not isinstance(image_height, int):  # type: ignore
             raise ValueError("'image_height' must be an integer.")
-        if not (8 <= image_height <= 1024):
-            raise ValueError("'image_height' must be between 8 and 1024.")
+        if not (256 <= image_height <= 2048):
+            raise ValueError("'image_height' must be between 256 and 2048 (inclusive).")
 
         # Validate image_width
         if not isinstance(image_width, int):  # type: ignore
             raise ValueError("'image_width' must be an integer.")
-        if not (8 <= image_width <= 1024):
-            raise ValueError("'image_width' must be between 8 and 1024.")
+        if not (256 <= image_width <= 2048):
+            raise ValueError("'image_width' must be between 256 and 2048 (inclusive).")
 
         # Validate negative_prompt
         if negative_prompt is not NOT_GIVEN:
@@ -314,14 +314,14 @@ class AsyncGenerationsResource(AsyncAPIResource):
             if not isinstance(num_inference_steps, int):
                 raise ValueError("'num_inference_steps' must be an integer.")
             if not (1 <= num_inference_steps <= 100):
-                raise ValueError("'num_inference_steps' must be between 1 and 100.")
+                raise ValueError("'num_inference_steps' must be between 1 and 100 (inclusive).")
 
         # Validate num_output_images
         if num_output_images is not NOT_GIVEN:
             if not isinstance(num_output_images, int):
                 raise ValueError("'num_output_images' must be an integer.")
             if not (1 <= num_output_images <= 5):
-                raise ValueError("'num_output_images' must be between 1 and 5.")
+                raise ValueError("'num_output_images' must be between 1 and 5 (inclusive).")
 
         # Validate output_img_type
         if output_img_type is not NOT_GIVEN:

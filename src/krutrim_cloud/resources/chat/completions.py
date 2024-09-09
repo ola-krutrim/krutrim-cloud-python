@@ -35,7 +35,26 @@ class CompletionsResource(SyncAPIResource):
     def with_streaming_response(self) -> CompletionsResourceWithStreamingResponse:
         return CompletionsResourceWithStreamingResponse(self)
 
-    supported_models = ["Krutrim-spectre-v2", "Mistral-7B-Instruct", "Meta-Llama-3-8B-Instruct"]
+    supported_models = [
+        "Krutrim-spectre-v2",
+        "Mistral-7B-Instruct",
+        "Meta-Llama-3-8B-Instruct",
+        "Gemma-2-27B-IT",
+        "Reflection-Llama-3.1-70B",
+    ]
+
+    context_8k_models: List[str] = [
+        "Mistral-7B-Instruct",
+        "Meta-Llama-3-8B-Instruct",
+        "Reflection-Llama-3.1-70B",
+    ]
+
+    context_4k_models: List[str] = [
+        "Krutrim-spectre-v2",
+        "Gemma-2-27B-IT",
+    ]
+
+    context_128k_models: List[str] = []
 
     def validate_parameters(
         self,
@@ -54,6 +73,7 @@ class CompletionsResource(SyncAPIResource):
         top_logprobs: int | Union[object, None],
         top_p: float | Union[object, None],
         timeout: Union[float, httpx.Timeout, None, object],
+        skip_special_tokens: bool | Union[object, None],
     ):
         # Validate messages
         if not isinstance(messages, list):
@@ -111,12 +131,12 @@ class CompletionsResource(SyncAPIResource):
                 raise ValueError("'max_tokens' must be an integer.")
             if max_tokens <= 0:
                 raise ValueError("'max_tokens' must be greater than 0.")
-            if model == "Krutrim-spectre-v2" and max_tokens > 4096:
-                raise ValueError("'max_tokens' must be less than 4096 for Krutrim-spectre-v2 model.")
-            if model == "Mistral-7B-Instruct" and max_tokens > 8192:
-                raise ValueError("'max_tokens' must be less than 8192 for Mistral-7B-Instruct model.")
-            if model == "Meta-Llama-3-8B-Instruct" and max_tokens > 8192:
-                raise ValueError("'max_tokens' must be less than 8192 for Meta-Llama-3-8B-Instruct model.")
+            if model in self.context_4k_models and max_tokens > 4096:
+                raise ValueError(f"'max_tokens' must be less than 4096 for {model}.")
+            if model in self.context_8k_models and max_tokens > 8192:
+                raise ValueError(f"'max_tokens' must be less than 8192 for {model}.")
+            if model in self.context_128k_models and max_tokens > 128000:
+                raise ValueError(f"'max_tokens' must be less than 128000 for {model}.")
 
         # Validate n
         if n is not NOT_GIVEN:
@@ -179,6 +199,11 @@ class CompletionsResource(SyncAPIResource):
             if not isinstance(timeout, (float, int, httpx.Timeout, type(None))):
                 raise ValueError("'timeout' must be a float, int, httpx.Timeout, or None.")
 
+        # Validate skip_special_tokens
+        if skip_special_tokens is not NOT_GIVEN:
+            if not isinstance(skip_special_tokens, bool):
+                raise ValueError("'skip_special_tokens' must be a boolean.")
+
     def create(
         self,
         *,
@@ -196,6 +221,7 @@ class CompletionsResource(SyncAPIResource):
         temperature: float | NotGiven = NOT_GIVEN,
         top_logprobs: int | NotGiven = NOT_GIVEN,
         top_p: float | NotGiven = NOT_GIVEN,
+        skip_special_tokens: bool | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -207,7 +233,12 @@ class CompletionsResource(SyncAPIResource):
         Create a chat completion
 
         Args:
-            model: "Krutrim-spectre-v2", Supported Values are: "Krutrim-spectre-v2", "Mistral-7B-Instruct", "Meta-Llama-3-8B-Instruct"
+            model: "Krutrim-spectre-v2", Supported Values are:
+            "Krutrim-spectre-v2",
+            "Mistral-7B-Instruct",
+            "Meta-Llama-3-8B-Instruct",
+            "Gemma-2-27B-IT",
+            "Reflection-Llama-3.1-70B"
 
             messages: [
                 {
@@ -243,6 +274,8 @@ class CompletionsResource(SyncAPIResource):
             temperature: 0, # Optional, Defaults to 1. Range: 0 to 2
 
             top_p: 1 # Optional, Defaults to 1. We generally recommend altering this or temperature but not both.
+
+            skip_special_tokens: False # Optional, Defaults to False which allows special tokens like <reflection>, <thinking>, <output> in the output text.
 
             extra_headers: Send extra headers
 
@@ -269,6 +302,7 @@ class CompletionsResource(SyncAPIResource):
             top_logprobs=top_logprobs,
             top_p=top_p,
             timeout=timeout,
+            skip_special_tokens=skip_special_tokens,
         )
 
         return self._post(
@@ -289,6 +323,7 @@ class CompletionsResource(SyncAPIResource):
                     "temperature": temperature,
                     "top_logprobs": top_logprobs,
                     "top_p": top_p,
+                    "skip_special_tokens": skip_special_tokens,
                 },
                 completion_create_params.CompletionCreateParams,
             ),
@@ -308,7 +343,26 @@ class AsyncCompletionsResource(AsyncAPIResource):
     def with_streaming_response(self) -> AsyncCompletionsResourceWithStreamingResponse:
         return AsyncCompletionsResourceWithStreamingResponse(self)
 
-    supported_models = ["Krutrim-spectre-v2", "Mistral-7B-Instruct", "Meta-Llama-3-8B-Instruct"]
+    supported_models = [
+        "Krutrim-spectre-v2",
+        "Mistral-7B-Instruct",
+        "Meta-Llama-3-8B-Instruct",
+        "Gemma-2-27B-IT",
+        "Reflection-Llama-3.1-70B",
+    ]
+
+    context_8k_models: List[str] = [
+        "Mistral-7B-Instruct",
+        "Meta-Llama-3-8B-Instruct",
+        "Reflection-Llama-3.1-70B",
+    ]
+
+    context_4k_models: List[str] = [
+        "Krutrim-spectre-v2",
+        "Gemma-2-27B-IT",
+    ]
+
+    context_128k_models: List[str] = []
 
     async def validate_parameters(
         self,
@@ -327,6 +381,7 @@ class AsyncCompletionsResource(AsyncAPIResource):
         top_logprobs: int | Union[object, None],
         top_p: float | Union[object, None],
         timeout: Union[float, httpx.Timeout, None, object],
+        skip_special_tokens: bool | Union[object, None],
     ):
         # Validate messages
         if not isinstance(messages, list):
@@ -384,6 +439,12 @@ class AsyncCompletionsResource(AsyncAPIResource):
                 raise ValueError("'max_tokens' must be an integer.")
             if max_tokens <= 0:
                 raise ValueError("'max_tokens' must be greater than 0.")
+            if model in self.context_4k_models and max_tokens > 4096:
+                raise ValueError(f"'max_tokens' must be less than 4096 for {model}.")
+            if model in self.context_8k_models and max_tokens > 8192:
+                raise ValueError(f"'max_tokens' must be less than 8192 for {model}.")
+            if model in self.context_128k_models and max_tokens > 128000:
+                raise ValueError(f"'max_tokens' must be less than 128000 for {model}.")
 
         # Validate n
         if n is not NOT_GIVEN:
@@ -446,6 +507,11 @@ class AsyncCompletionsResource(AsyncAPIResource):
             if not isinstance(timeout, (float, int, httpx.Timeout, type(None))):
                 raise ValueError("'timeout' must be a float, int, httpx.Timeout, or None.")
 
+        # Validate skip_special_tokens
+        if skip_special_tokens is not NOT_GIVEN:
+            if not isinstance(skip_special_tokens, bool):
+                raise ValueError("'skip_special_tokens' must be a boolean.")
+
     async def create(
         self,
         *,
@@ -463,6 +529,7 @@ class AsyncCompletionsResource(AsyncAPIResource):
         temperature: float | NotGiven = NOT_GIVEN,
         top_logprobs: int | NotGiven = NOT_GIVEN,
         top_p: float | NotGiven = NOT_GIVEN,
+        skip_special_tokens: bool | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -474,7 +541,12 @@ class AsyncCompletionsResource(AsyncAPIResource):
         Create a chat completion
 
         Args:
-            model: "Krutrim-spectre-v2", Supported Values are: "Krutrim-spectre-v2", "Mistral-7B-Instruct", "Meta-Llama-3-8B-Instruct"
+            model: "Krutrim-spectre-v2", Supported Values are:
+            "Krutrim-spectre-v2",
+            "Mistral-7B-Instruct",
+            "Meta-Llama-3-8B-Instruct",
+            "Gemma-2-27B-IT",
+            "Reflection-Llama-3.1-70B"
 
             messages: [
                 {
@@ -511,6 +583,8 @@ class AsyncCompletionsResource(AsyncAPIResource):
 
             top_p: 1 # Optional, Defaults to 1. We generally recommend altering this or temperature but not both.
 
+            skip_special_tokens: False # Optional, Defaults to False which allows special tokens like <reflection>, <thinking>, <output> in the output text.
+
             extra_headers: Send extra headers
 
             extra_query: Add additional query parameters to the request
@@ -534,6 +608,7 @@ class AsyncCompletionsResource(AsyncAPIResource):
             temperature=temperature,
             top_logprobs=top_logprobs,
             top_p=top_p,
+            skip_special_tokens=skip_special_tokens,
             timeout=timeout,
         )
 
@@ -555,6 +630,7 @@ class AsyncCompletionsResource(AsyncAPIResource):
                     "temperature": temperature,
                     "top_logprobs": top_logprobs,
                     "top_p": top_p,
+                    "skip_special_tokens": skip_special_tokens,
                 },
                 completion_create_params.CompletionCreateParams,
             ),
