@@ -40,13 +40,11 @@ class CompletionsResource(SyncAPIResource):
         "Mistral-7B-Instruct",
         "Meta-Llama-3-8B-Instruct",
         "Gemma-2-27B-IT",
-        "Reflection-Llama-3.1-70B",
     ]
 
     context_8k_models: List[str] = [
         "Mistral-7B-Instruct",
         "Meta-Llama-3-8B-Instruct",
-        "Reflection-Llama-3.1-70B",
     ]
 
     context_4k_models: List[str] = [
@@ -238,7 +236,6 @@ class CompletionsResource(SyncAPIResource):
             "Mistral-7B-Instruct",
             "Meta-Llama-3-8B-Instruct",
             "Gemma-2-27B-IT",
-            "Reflection-Llama-3.1-70B"
 
             messages: [
                 {
@@ -348,13 +345,11 @@ class AsyncCompletionsResource(AsyncAPIResource):
         "Mistral-7B-Instruct",
         "Meta-Llama-3-8B-Instruct",
         "Gemma-2-27B-IT",
-        "Reflection-Llama-3.1-70B",
     ]
 
     context_8k_models: List[str] = [
         "Mistral-7B-Instruct",
         "Meta-Llama-3-8B-Instruct",
-        "Reflection-Llama-3.1-70B",
     ]
 
     context_4k_models: List[str] = [
@@ -546,7 +541,6 @@ class AsyncCompletionsResource(AsyncAPIResource):
             "Mistral-7B-Instruct",
             "Meta-Llama-3-8B-Instruct",
             "Gemma-2-27B-IT",
-            "Reflection-Llama-3.1-70B"
 
             messages: [
                 {

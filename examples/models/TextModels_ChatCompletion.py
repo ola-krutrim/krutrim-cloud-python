@@ -9,12 +9,8 @@ model_name = "Mistral-7B-Instruct"
 # model_name = "Meta-Llama-3-8B-Instruct"
 # model_name = "Krutrim-spectre-v2"
 # model_name = "Gemma-2-27B-IT"
-# model_name = "Reflection-Llama-3.1-70B"
 
 # Notes:
-# Use this system message for "Reflection-Llama-3.1-70B" for better performance
-# "You are an AI system, capable of reasoning and reflection. Reason through the query inside <thinking> tags, and then provide your final response inside <output> tags. If you make a mistake, correct yourself inside <reflection> tags"
-
 # For Gemma model, don't provide the system message as it doesn't support the system prompts
 
 messages = [
