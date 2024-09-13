@@ -98,8 +98,6 @@ class CompletionsResource(SyncAPIResource):
         # Validate model
         if not isinstance(model, str):  # type: ignore
             raise ValueError("'model' must be a string.")
-        if model not in self.supported_models:
-            raise ValueError(f"'model' must be one of the supported values: {self.supported_models}.")
 
         # Validate frequency_penalty
         if frequency_penalty is not NOT_GIVEN:
@@ -403,8 +401,6 @@ class AsyncCompletionsResource(AsyncAPIResource):
         # Validate model
         if not isinstance(model, str):  # type: ignore
             raise ValueError("'model' must be a string.")
-        if model not in self.supported_models:
-            raise ValueError(f"'model' must be one of the supported values: {self.supported_models}.")
 
         # Validate frequency_penalty
         if frequency_penalty is not NOT_GIVEN:

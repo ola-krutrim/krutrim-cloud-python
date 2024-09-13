@@ -32,6 +32,16 @@ from .multimodal import (
     MultimodalResourceWithStreamingResponse,
     AsyncMultimodalResourceWithStreamingResponse,
 )
+from .registry import RegistryResource
+
+from .deploy import (
+    DeployResource,
+    AsyncDeployResource,
+    DeployResourceWithRawResponse,
+    AsyncDeployResourceWithRawResponse,
+    DeployResourceWithStreamingResponse,
+    AsyncDeployResourceWithStreamingResponse,
+)
 
 __all__ = [
     "ImagesResource",
@@ -58,4 +68,11 @@ __all__ = [
     "AsyncChatResourceWithRawResponse",
     "ChatResourceWithStreamingResponse",
     "AsyncChatResourceWithStreamingResponse",
+    "RegistryResource",
+    "DeployResource",
+    "AsyncDeployResource",
+    "DeployResourceWithRawResponse",
+    "AsyncDeployResourceWithRawResponse",
+    "DeployResourceWithStreamingResponse",
+    "AsyncDeployResourceWithStreamingResponse",
 ]

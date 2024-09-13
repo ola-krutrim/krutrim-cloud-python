@@ -45,6 +45,8 @@ including how to interact with different models and perform inference.
 
 Model Inference: [Model Inference Examples](examples/models)
 
+Bring Your Own Model (BYOM): [Bring Your Own Model Notebook](examples/bring_your_own_model/bring_your_own_model.ipynb)
+
 Resources directory: [Sample Resources](examples/resources)
 
 
@@ -286,7 +288,7 @@ If you need to access undocumented endpoints, params, or response properties, th
 #### Undocumented endpoints
 
 To make requests to undocumented endpoints, you can make requests using `client.get`, `client.post`, and other
-http verbs. Options on the client will be respected (such as retries) will be respected when making this
+http verbs. Options on the client will be respected (such as retries)  when making this
 request.
 
 ```py

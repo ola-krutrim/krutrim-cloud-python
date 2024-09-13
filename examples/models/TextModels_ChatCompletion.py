@@ -17,7 +17,7 @@ messages = [
     {"role": "system", "content": "You are a helpful assistant."},
     {
         "role": "user",
-        "content": "Give a random number.  Provide only number without any explatation, for example: \nRandom Number: <number>",
+        "content": "Give a random number.  Provide only number without any explanation, for example: \nRandom Number: <number>",
     },
 ]
 

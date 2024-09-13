@@ -53,7 +53,8 @@ class KrutrimCloud(SyncAPIClient):
     chat: resources.ChatResource
     with_raw_response: KrutrimCloudWithRawResponse
     with_streaming_response: KrutrimCloudWithStreamedResponse
-
+    registry: resources.RegistryResource
+    deploy: resources.DeployResource
     # client options
 
     def __init__(
@@ -115,6 +116,8 @@ class KrutrimCloud(SyncAPIClient):
         self.chat = resources.ChatResource(self)
         self.with_raw_response = KrutrimCloudWithRawResponse(self)
         self.with_streaming_response = KrutrimCloudWithStreamedResponse(self)
+        self.registry = resources.RegistryResource(self)
+        self.deploy = resources.DeployResource(self)
 
     @property
     @override
@@ -227,6 +230,7 @@ class AsyncKrutrimCloud(AsyncAPIClient):
     chat: resources.AsyncChatResource
     with_raw_response: AsyncKrutrimCloudWithRawResponse
     with_streaming_response: AsyncKrutrimCloudWithStreamedResponse
+    deploy: resources.AsyncDeployResource
 
     # client options
 
@@ -289,6 +293,7 @@ class AsyncKrutrimCloud(AsyncAPIClient):
         self.chat = resources.AsyncChatResource(self)
         self.with_raw_response = AsyncKrutrimCloudWithRawResponse(self)
         self.with_streaming_response = AsyncKrutrimCloudWithStreamedResponse(self)
+        self.deploy = resources.AsyncDeployResource(self)
 
     @property
     @override
