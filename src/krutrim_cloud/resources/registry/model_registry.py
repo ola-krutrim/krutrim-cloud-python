@@ -313,6 +313,7 @@ class ModelRegistryResource(SyncAPIResource):
                         "basemodel": base_model,
                     }
                 },
+                "repoType": "private",
             },
             "artifactType": "model",
         }
@@ -336,6 +337,38 @@ class ModelRegistryResource(SyncAPIResource):
                     "artifactType": "model",
                 }
                 response = self.__make_post_request(url=add_update_tag_version_endpoint_url, payload=payload)
+        except Exception as exc:
+            raise Exception(f"Exception occurred while registering the model details. : {exc}") from exc
+
+    def __update_model_registry_tag(
+        self,
+        model_name: str,
+        model_id: str,
+        deploy_id: str,
+        base_model: Optional[str] = "",
+    ):
+        # Call Artifact Registry to update the model version information
+        payload = {
+            "artifactName": model_name,
+            "artifactInfo": {
+                "task": "finetuning",
+                "status": "active",
+                "parentTags": ["text-generation"],
+                "repoType": "private",
+                "version": {
+                    model_id: {
+                        "endpointInfo": f"{self._client.base_url}/v1/chat/completions",
+                        "uuid": deploy_id,
+                        "modelParameterName": f"{model_id}:{deploy_id}",
+                        "basemodel": base_model,
+                    }
+                },
+            },
+            "artifactType": "model",
+        }
+        create_tag_endpoint_url = f"{self._model_registry_url}/artifact_registry/v1/create_tag"
+        try:
+            self.__make_post_request(url=create_tag_endpoint_url, payload=payload)
         except Exception as exc:
             raise Exception(f"Exception occurred while registering the model details. : {exc}") from exc
 
@@ -701,6 +734,11 @@ class ModelRegistryResource(SyncAPIResource):
 
     def fetch_model_name(self, model_id: str):
         return self.__fetch_model_name_from_registry(model_id)
+
+    def add_model_deployment_version(self, model_name: str, model_id: str, deploy_id: str, base_model: str):
+        self.__update_model_registry_tag(
+            model_name=model_name, model_id=model_id, deploy_id=deploy_id, base_model=base_model
+        )
 
     def list_model_version(self, bucket_name: str, model_id: str) -> List[str]:
         self.__validate_list_model_version_params(bucket_name=bucket_name, model_id=model_id)

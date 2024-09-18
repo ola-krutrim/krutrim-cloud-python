@@ -230,6 +230,10 @@ class TasksResource(SyncAPIResource):
             cast_to=TaskCreateResponse,
         )
         response.name = self._client.registry.model_registry.fetch_model_name(response.name)
+
+        self._client.registry.model_registry.add_model_deployment_version(
+            model_name=response.name, model_id=model_id, deploy_id=response.id, base_model=""
+        )
         return response
 
     def retrieve(
