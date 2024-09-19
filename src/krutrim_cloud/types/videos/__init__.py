@@ -2,4 +2,4 @@
 
 from __future__ import annotations
 
-from .shared import WhisperResponse as WhisperResponse
+from .cog_video_response import CogVideoResponse as CogVideoResponse

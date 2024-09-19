@@ -55,6 +55,7 @@ class KrutrimCloud(SyncAPIClient):
     with_streaming_response: KrutrimCloudWithStreamedResponse
     registry: resources.RegistryResource
     deploy: resources.DeployResource
+    videos: resources.VideosResource
     # client options
 
     def __init__(
@@ -118,6 +119,7 @@ class KrutrimCloud(SyncAPIClient):
         self.with_streaming_response = KrutrimCloudWithStreamedResponse(self)
         self.registry = resources.RegistryResource(self)
         self.deploy = resources.DeployResource(self)
+        self.videos = resources.VideosResource(self)
 
     @property
     @override
@@ -231,6 +233,7 @@ class AsyncKrutrimCloud(AsyncAPIClient):
     with_raw_response: AsyncKrutrimCloudWithRawResponse
     with_streaming_response: AsyncKrutrimCloudWithStreamedResponse
     deploy: resources.AsyncDeployResource
+    videos: resources.AsyncVideosResource
 
     # client options
 
@@ -294,6 +297,7 @@ class AsyncKrutrimCloud(AsyncAPIClient):
         self.with_raw_response = AsyncKrutrimCloudWithRawResponse(self)
         self.with_streaming_response = AsyncKrutrimCloudWithStreamedResponse(self)
         self.deploy = resources.AsyncDeployResource(self)
+        self.videos = resources.AsyncVideosResource(self)
 
     @property
     @override

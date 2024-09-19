@@ -2,4 +2,4 @@
 
 from __future__ import annotations
 
-from .shared import WhisperResponse as WhisperResponse
+from .text2video_create_params import Text2videoCreateParams as Text2videoCreateParams

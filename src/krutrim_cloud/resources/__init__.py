@@ -43,6 +43,15 @@ from .deploy import (
     AsyncDeployResourceWithStreamingResponse,
 )
 
+from .videos import (
+    VideosResource,
+    AsyncVideosResource,
+    VideosResourceWithRawResponse,
+    AsyncVideosResourceWithRawResponse,
+    VideosResourceWithStreamingResponse,
+    AsyncVideosResourceWithStreamingResponse,
+)
+
 __all__ = [
     "ImagesResource",
     "AsyncImagesResource",
@@ -75,4 +84,10 @@ __all__ = [
     "AsyncDeployResourceWithRawResponse",
     "DeployResourceWithStreamingResponse",
     "AsyncDeployResourceWithStreamingResponse",
+    "VideosResource",
+    "AsyncVideosResource",
+    "VideosResourceWithRawResponse",
+    "AsyncVideosResourceWithRawResponse",
+    "VideosResourceWithStreamingResponse",
+    "AsyncVideosResourceWithStreamingResponse",
 ]

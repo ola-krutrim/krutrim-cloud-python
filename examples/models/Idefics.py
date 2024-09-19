@@ -10,8 +10,18 @@ client = KrutrimCloud()
 PIL_img_1 = Image.open("../resources/Skyline-Chicago.jpg")
 enc_img_1 = convert_PIL_image_to_base64(PIL_img_1, format="JPEG")
 
-images = [[enc_img_1], []]
-prompts = ["<image>", "what is the city??"]
+images = [[enc_img_1]]
+user_prompt = "What is the city??"
+prompts = [
+        {
+        "role": "User",
+        "content": [
+            {"type": "image"},
+            {"type": "text", "text": user_prompt},
+        ]
+    }
+
+    ]
 
 try:
     response = client.multimodal.generations.idefics(

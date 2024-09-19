@@ -49,12 +49,22 @@ class GenerationsResource(SyncAPIResource):
             raise ValueError("'model_name' cannot be empty.")
 
         # Validate prompts
-        if not isinstance(prompts, list):  # type: ignore
-            raise TypeError("'prompts' must be a list of strings.")
-        if not all(isinstance(prompt, str) for prompt in prompts):  # type: ignore
-            raise TypeError("All items in 'prompts' must be strings.")
-        if not prompts:
-            raise ValueError("'prompts' cannot be empty.")
+        if not isinstance(prompts, Iterable):  # Check if 'prompts' is an iterable
+            raise TypeError("'prompts' must be an iterable.")
+        if not all(isinstance(item, dict) for item in prompts):  # Ensure all items are dictionaries
+            raise TypeError("All items in 'prompts' must be dictionaries.")
+        for item in prompts:
+            if "role" not in item or not isinstance(item["role"], str):
+                raise ValueError("Each dictionary in 'prompts' must contain a 'role' key with a string value.")
+            if "content" not in item or not isinstance(item["content"], Iterable):
+                raise ValueError("Each dictionary in 'prompts' must contain a 'content' key with an iterable value.")
+            for content_item in item["content"]:
+                if not isinstance(content_item, dict):
+                    raise TypeError("Each item in 'content' must be a dictionary.")
+                if "type" not in content_item or not isinstance(content_item["type"], str):
+                    raise ValueError("Each dictionary in 'content' must contain a 'type' key with a string value.")
+                if "text" in content_item and not isinstance(content_item["text"], str):
+                    raise TypeError("If 'text' is present in 'content', it must be a string.")
 
         # Validate images
         if not isinstance(images, Iterable):
@@ -96,14 +106,18 @@ class GenerationsResource(SyncAPIResource):
         Args:
             model_name:"idefics" # DO NOT CHANGE THIS VALUE
 
-            prompts:  list: [
-                "<image bytes>  ", # byte encoded image data
-                "what is the city??"  # Add the prompt/question to be sent to the model related to the image here
+            prompts: list[
+                {
+                    "role": "User",  # The role of the entity providing the prompt.
+                    "content": [
+                        {"type": "image"},  # Placeholder for image content.
+                        {"type": "text", "text": "What is the city??"}  # The text prompt/question related to the image.
+                    ]
+                }
             ]
 
             images: [
-                [<encoded image bytes here>], # Refer to Fetch byte-content from Image section,
-                [] # This value is empty since there is no image reference at this index in the prompts list
+                [<encoded image bytes here>], # Refer to Fetch byte-content from Image section
             ]
 
             max_tokens: int: 50 - Max tokens can be generated [8 - 1024]
@@ -161,12 +175,22 @@ class AsyncGenerationsResource(AsyncAPIResource):
             raise ValueError("'model_name' cannot be empty.")
 
         # Validate prompts
-        if not isinstance(prompts, list):  # type: ignore
-            raise TypeError("'prompts' must be a list of strings.")
-        if not all(isinstance(prompt, str) for prompt in prompts):  # type: ignore
-            raise TypeError("All items in 'prompts' must be strings.")
-        if not prompts:
-            raise ValueError("'prompts' cannot be empty.")
+        if not isinstance(prompts, Iterable):  # Check if 'prompts' is an iterable
+            raise TypeError("'prompts' must be an iterable.")
+        if not all(isinstance(item, dict) for item in prompts):  # Ensure all items are dictionaries
+            raise TypeError("All items in 'prompts' must be dictionaries.")
+        for item in prompts:
+            if "role" not in item or not isinstance(item["role"], str):
+                raise ValueError("Each dictionary in 'prompts' must contain a 'role' key with a string value.")
+            if "content" not in item or not isinstance(item["content"], Iterable):
+                raise ValueError("Each dictionary in 'prompts' must contain a 'content' key with an iterable value.")
+            for content_item in item["content"]:
+                if not isinstance(content_item, dict):
+                    raise TypeError("Each item in 'content' must be a dictionary.")
+                if "type" not in content_item or not isinstance(content_item["type"], str):
+                    raise ValueError("Each dictionary in 'content' must contain a 'type' key with a string value.")
+                if "text" in content_item and not isinstance(content_item["text"], str):
+                    raise TypeError("If 'text' is present in 'content', it must be a string.")
 
         # Validate images
         if not isinstance(images, Iterable):
@@ -208,14 +232,18 @@ class AsyncGenerationsResource(AsyncAPIResource):
         Args:
             model_name:"idefics" # DO NOT CHANGE THIS VALUE
 
-            prompts:  list: [
-                "<image bytes>  ", # byte encoded image data
-                "what is the city??"  # Add the prompt/question to be sent to the model related to the image here
+            prompts: list[
+                {
+                    "role": "User",  # The role of the entity providing the prompt.
+                    "content": [
+                        {"type": "image"},  # Placeholder for image content.
+                        {"type": "text", "text": "What is the city??"}  # The text prompt/question related to the image.
+                    ]
+                }
             ]
 
             images: [
-                [<encoded image bytes here>], # Refer to Fetch byte-content from Image section,
-                [] # This value is empty since there is no image reference at this index in the prompts list
+                [<encoded image bytes here>], # Refer to Fetch byte-content from Image section
             ]
 
             max_tokens: int: 50 - Max tokens can be generated [8 - 1024]

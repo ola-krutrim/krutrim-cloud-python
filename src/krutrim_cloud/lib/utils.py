@@ -8,6 +8,7 @@ from datetime import datetime
 from krutrim_cloud._exceptions import TimeRetrievalError, CouldNotDecodeError
 from pydub import AudioSegment  # type: ignore
 from pydub.exceptions import CouldntDecodeError  # type: ignore
+from moviepy.editor import ImageSequenceClip
 
 
 def convert_base64_to_PIL_img(base64_data: str) -> Image.Image:
@@ -324,3 +325,70 @@ def get_current_time_string(format: str = "%Y%m%d_%H%M%S") -> str:
         return time_string
     except Exception as exc:
         raise TimeRetrievalError(f"Failed to retrieve or format the current time: {exc}")
+
+
+def create_video_clip(video_frames, fps=8):
+    """
+    Create a video clip from a list of video frames.
+
+    Args:
+        video_frames (list): A list of frames, each represented as an image object (e.g., PIL Image or similar).
+        fps (int, optional): Frames per second for the video. Defaults to 8.
+
+    Returns:
+        ImageSequenceClip: A MoviePy ImageSequenceClip object created from the provided frames.
+
+    Raises:
+        ValueError: If any frame in video_frames cannot be converted to a numpy array.
+        TypeError: If video_frames is not a list or contains non-image objects.
+
+    Example:
+        >>> video_frames = [frame1, frame2, frame3]
+        >>> clip = create_video_clip(video_frames, fps=10)
+        >>> clip.write_videofile("output_video.mp4")
+    """
+    try:
+        frames = [np.array(frame) for frame in video_frames]
+    except Exception as e:
+        raise ValueError("Error converting frames to numpy arrays") from e
+    try:
+        clip = ImageSequenceClip(frames, fps=fps)
+    except Exception as e:
+        raise ValueError("Error creating video clip from frames") from e
+    return clip
+
+
+def save_video_clip(video_frames, output_dirpath: str, filename: str, fps=8) -> None:
+    """
+    Create a video clip from the provided frames and save it to the specified directory with the given filename.
+
+    Args:
+        video_frames (list): A list of frames, each represented as an image object (e.g., PIL Image or similar).
+        output_dirpath (str): The directory path where the video will be saved.
+        filename (str): The name of the file to save the video as.
+        fps (int, optional): Frames per second for the video. Defaults to 8.
+
+    Returns:
+        None
+
+    Raises:
+        ValueError: If the video_frames cannot be converted to a video clip.
+        OSError: If the video cannot be saved due to an OS-related error.
+
+    Example:
+        >>> video_frames = [frame1, frame2, frame3]
+        >>> save_video_clip(video_frames, '/path/to/save', 'video.mp4')
+    """
+    try:
+        clip = create_video_clip(video_frames, fps)
+    except ValueError as e:
+        raise ValueError("Error creating video clip") from e
+    try:
+        os.makedirs(output_dirpath, exist_ok=True)
+    except OSError as e:
+        raise OSError(f"Failed to create directory '{output_dirpath}': {e}")
+    try:
+        save_path = os.path.join(output_dirpath, filename)
+        clip.write_videofile(save_path, fps=fps)
+    except OSError as e:
+        raise OSError(f"Failed to save the video to '{save_path}': {e}")

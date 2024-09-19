@@ -106,19 +106,20 @@ from krutrim_cloud.types.multimodal import IdeficsResponse
 `prompts`:  list: Example
 ```
 [
-    "<image>  ", # normal string "<image>"
-    "what is the city??",  # Add the prompt/question to be sent to the model related to the image here
-    "<image>  ", # normal string "<image>"
-    "what is the name of this bridge??"  # Add the prompt/question to be sent to the model related to the image here
-]
+        {
+        "role": "User",
+        "content": [
+            {"type": "image"},
+            {"type": "text", "text": user_prompt}, # Add the prompt/question to be sent to the model related to the image here
+        ]
+    }
+
+    ]
 ```
 `images`: list: Example
 ```
 [
-    [<base64 encoded image bytes of image 1>], # base64 encoded image byte data of image 1
-    [], # This value is empty since there is no image reference at this index in the prompts list
-    [<base64 encoded image bytes of image 2>], # base64 encoded image byte data of image 2
-    [] # This value is empty since there is no image reference at this index in the prompts list
+    [<base64 encoded image bytes of image>], # base64 encoded image byte data of image 
 ]
 ```
 `max_tokens`: int: 50 - Max tokens can be generated [8 - 1024]
@@ -332,6 +333,68 @@ from krutrim_cloud.types.chat import CompletionCreateResponse
 `object`: str
 
 ---
+# Text to Video Generation
+Examples:
+
+---
+- **CogVideoX-2b Model**: [CogVideoX_2b.py](./examples/models/CogVideoX_2b.py) - This script contains the example of the CogVideoX_2b model.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/videos/generations/text2video">client.images.generations.<a href="./src/krutrim_cloud/resources/videos/generations/text2video.py">params</a>) -> <a href="./src/krutrim_cloud/types/videos/cog_video_response.py">CogVideoResponse</a></code>
+
+```python
+from krutrim_cloud.types.videos import CogVideoResponse
+```
+
+
+### Request Parameter List:
+
+`model_name`: str: "cogvideo", # DO NOT CHANGE THIS VALUE
+
+    Specifies the model to be used for generating the image.
+
+`prompt`': List[str]: Specify the prompt
+
+    Defines the text prompt used to generate the video. It should be a single prompt passed in the form of a List.
+
+`num_frames`: int: Optional , Defaults to 48. Min value of 10 and max value is 49. 
+
+    Determines the number of video frames to generate in response to the request.
+
+`guidance_scale`: float: Optional, Defaults to 6. Optimal values are <= 15.
+
+    Controls how strongly the model adheres to the prompt. Higher values make the model stick more closely to the prompt.
+
+`num_inference_steps`: int: Optional, Defaults to 50. Max value is 50.
+
+    Defines the number of steps for the inference process. More steps can lead to higher quality images but also longer processing time.
+
+`seed`: int: Optional, Leave it empty to generate a random value. Use the same value if you wish to get the same image. Modify the remaining parameters to get variants of the image
+
+    Sets a seed for the random number generator, allowing you to reproduce the same image generation. If left empty, a random seed will be used.
+
+`output_img_type`: str: Optional, Defaults to pil. Supported: pil only. 
+
+    Specifies the format of the output image.
+
+`timeout`: float: Optional,Override the client-level default timeout for this request, in seconds
+
+    Overrides the default client timeout for this request, setting the maximum time (in seconds) the request should wait before timing out.
+
+### Response Parameter List:
+
+`data`: List[Dict[str, str]]
+
+`error`: Optional[str] = None
+
+---
+
+
+---
 # Bring Your Own Model
 
 ## Upload model to Krutrim S3 Storage
@@ -397,8 +460,6 @@ from krutrim_cloud.types.deploy import TaskCreateResponse
 `s3_secret`: str : S3 secret
 
 `argument`: Optional[str] : additional argument to parse to inference engine
-
-`environ`: Optional[str] : additional environment variables as "key_1=value1,key_2=value2" to pass to inference engine
 
 `max_batch_size`: Optional[int] : max batch size , default: 256
 
