@@ -537,3 +537,541 @@ from krutrim_cloud.types.deploy import TaskListResponse
 `id`: str : Deployment Task ID
 
 ---
+
+## Fine-tuning a Model on Krutrim Cloud
+
+#### Methods:
+
+:arrow_right: List All Supported Models
+
+<code title="get /api/v1/fine_tuning/models">client.fine_tuning.models.<a href="./src/krutrim_cloud/resources/fine_tuning/models/models.py">list</a> -> <a href="./src/krutrim_cloud/types/fine_tuning/mode_list_response.py">ModelListResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import ModelListResponse
+```
+### Response Parameter List:
+`list` : str: list of models
+
+---
+
+:arrow_right: List All Supported Models
+
+<code title="get /api/v1/fine_tuning/engines">client.fine_tuning.engines.<a href=".src/krutrim_cloud/resources/fine_tuning/engines/engines.py">list</a> -> <a href="./src/krutrim_cloud/types/fine_tuning/engine_list_response.py">EngineListResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import EngineListResponse
+```
+### Response Parameter List:
+`list` : str: list of models
+
+---
+
+:arrow_right: List Models Supported by a Specific Engine
+<code title="get /api/v1/fine_tuning/models/{engine}">client.fine_tuning.engines.<a href="./src/krutrim_cloud/resources/fine_tuning/models/models.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/model_retrieve_response.py"> ModeRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import ModeRetrieveResponse
+```
+### Request Parameter List:
+`engine`: str : Engine Name.
+
+### Response Parameter List:
+`list` : str: list of models
+
+---
+
+:arrow_right: List Supported Fine-Tuning Modes
+<code title="get /api/v1/fine_tuning/modes">client.fine_tuning.modes.<a href="./src/krutrim_cloud/resources/fine_tuning/modes/modes.py">list</a> -><a href="./src/krutrim_cloud/types/fine_tuning/mode_list_response.py"> ModeListResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import ModeListResponse
+```
+
+### Response Parameter List:
+`list` : str: list of modes
+
+---
+
+:arrow_right: List Models by Engine and Mode
+
+<code title="get /api/v1/fine_tuning/models/{engine}/{mode}">client.fine_tuning.models.mode.<a href="./src/krutrim_cloud/resources/fine_tuning/models/mode.py">list</a> -><a href="./src/krutrim_cloud/types/fine_tuning/mode_list_response.py"> ModeRetrieveResponse</a></code>
+
+### Response Parameter List:
+`list` : str: list of modes
+
+---
+
+:arrow_right: List Modes Supported by a Given Engine
+
+<code title="get /api/v1/fine_tuning/models/{engine}/{mode}">client.fine_tuning.modes.<a href="./src/krutrim_cloud/resources/fine_tuning/modes/modes.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/mode_retrieve_response.py"> ModeRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import ModeRetrieveResponse
+```
+### Response Parameter List:
+`list` : str: list of modes
+
+---
+
+:arrow_right: List Modes Supported by a Given Engine and Model
+
+
+<code title="get /api/v1/fine_tuning/modes/{engine}/{model}">client.fine_tuning.modes.model.<a href="./src/krutrim_cloud/resources/fine_tuning/modes/model.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/mode_retrieve_response.py"> ModeRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import ModeRetrieveResponse
+```
+### Response Parameter List:
+`list` : str: list of modes
+
+---
+
+
+:arrow_right: List Fine-Tuning Engine by Model
+
+
+<code title="get /api/v1/fine_tuning/engines/{model}">client.fine_tuning.engines.model.<a href="./src/krutrim_cloud/resources/fine_tuning/engines/model/model.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/model_retrieve_response.py"> ModelRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import ModelRetrieveResponse
+```
+### Response Parameter List:
+`list` : str: list of Engine
+
+---
+
+
+:arrow_right: List Fine-Tuning Engine by Model and Mode
+
+
+<code title="get /api/v1/fine_tuning/engines/{model}/{mode}">client.fine_tuning.engines.model.mode.<a href="./src/krutrim_cloud/resources/fine_tuning/engines/model/mode.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/model_retrieve_response.py"> ModeRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import ModeRetrieveResponse
+```
+### Request Parameter List:
+`model`: str : Model Name.
+
+`mode` : str : Mode Type
+
+### Response Parameter List:
+`list` : str: list of Engine.
+
+---
+
+:arrow_right: Create Datasets using File Object
+
+<code title="get /api/v1/fine_tuning/datasets">client.fine_tuning.datasets.<a href="./src/krutrim_cloud/resources/fine_tuning/datasets.py">create</a> -> None </code>
+
+### Request Parameter List:
+`file`: str :Input Dataset File Path.
+
+---
+
+:arrow_right: Create Datasets using S3
+
+<code title="get /api/v1/fine_tuning/datasets/copy">client.fine_tuning.datasets.<a href="./src/krutrim_cloud/resources/fine_tuning/datasets.py">copy</a> -><a href="./src/krutrim_cloud/types/fine_tuning/dataset_copy_response.py"> DatasetCopyResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import DatasetCopyResponse
+```
+### Request Parameter List:
+`filename`: str : Filename.
+
+`path`: str : S3 Path
+
+`s3_access_key`: str : Access Key
+
+`s3_endpoint`: str : S3 endpoint
+
+`s3_region`: str : S3 region
+
+`s3_secret`: str: S3 secret
+
+### Response Parameter List:
+`s3-path` : str: S3 Path where the data stored.
+
+`filename` : str: name of the uploaded file.
+
+---
+
+:arrow_right: List All Datasets
+
+<code title="get /api/v1/fine_tuning/datasets">client.fine_tuning.datasets.<a href="./src/krutrim_cloud/resources/fine_tuning/datasets.py">list</a> -><a href="./src/krutrim_cloud/types/fine_tuning/dataset_list_response.py"> DatasetListResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import DatasetListResponse
+```
+
+### Response Parameter List:
+`list` : list: list of datasets
+
+---
+
+:arrow_right: Read a Specific Dataset
+
+<code title="get /api/v1/fine_tuning/datasets/{filename}">client.fine_tuning.datasets.<a href="./src/krutrim_cloud/resources/fine_tuning/datasets.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/dataset_retrieve_response.py"> DatasetRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import DatasetRetrieveResponse
+```
+### Request Parameter List:
+`file`: str : filename
+
+### Response Parameter List:
+`list` : list: list of dataset content 
+
+---
+
+
+:arrow_right: Delete a Specific Dataset
+<code title="get /api/v1/fine_tuning/datasets/{filename}/del">client.fine_tuning.datasets.<a href="./src/krutrim_cloud/resources/fine_tuning/datasets.py">delete</a> ->None</code>
+
+### Request Parameter List:
+`file`: str : filename
+
+
+---
+
+:arrow_right: Create a Fine-Tuning Task
+
+<code title="get /api/v1/fine_tuning/tasks">client.fine_tuning.tasks.<a href="./src/krutrim_cloud/resources/fine_tuning/datasets.py">create</a> -><a href="./src/krutrim_cloud/types/fine_tuning/dataset_retrieve_response.py"> TaskCreateResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import TaskCreateResponse
+```
+### Request Parameter List:
+`engine`: str: Engine type
+
+`task_name`: str: Task Name
+
+`namespace`: str: Namespace
+
+`priority`: int: Priority
+
+`model`: str: Model Name
+
+`mode`: str: Mode
+
+`dataset`: str: Dataset Name
+
+`test_dataset`: str : Test Dataset Name
+
+`ngpu`: int: No of GPU
+
+`lora_rank`: int: Lora Rank
+
+`lora_alpha`: int: Lora Alpha
+
+`batch`: int: Batch Size
+
+`lr`: int : Learning Rate
+
+`epoch`: int: Epoch Number
+
+`seed`: int: Random Seed
+
+`version`: str : Version String
+
+`total_checkpoint`: int: Total Checkpoint
+
+### Response Parameter List:
+`task_id` :Optional[str]: Task ID
+
+---
+
+
+:arrow_right: List All Fine-Tuning Tasks
+
+<code title="get /api/v1/fine_tuning/tasks">client.fine_tuning.tasks.<a href="./src/krutrim_cloud/resources/fine_tuning/tasks.py">list</a> -><a href="./src/krutrim_cloud/types/fine_tuning/task_list_response.py"> TaskListResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import TaskListResponse
+```
+
+### Response Parameter List:
+`count`: Optional[int] : Total number of task.
+
+`offset`: Optional[int] : List start offset.
+
+`task_list`: Optional[List[object]] : Task List
+
+- `name`: Optional[str] :Name.
+
+- ` model`: Optional[str] : Model.
+
+- `id`: Optional[str] = :ID.
+
+- `status`: Optional[str] = :status.
+
+- `mtime`: Optional[str] = :mtime.
+
+- `total_checkpoint`:  Optional[int] = :No of Total Checkpoint.
+
+- `checkpoints`: Optional[list] : Checkpoints
+
+---
+
+
+:arrow_right: Retrieve a Specific Fine-Tuning Task
+
+<code title="get /api/v1/fine_tuning/tasks/{id}">client.fine_tuning.tasks.<a href="./src/krutrim_cloud/resources/fine_tuning/tasks.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/task_retrieve_response.py"> TaskRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import TaskRetrieveResponse
+```
+### Request Parameter List:
+`id`: Optional[str] : Task ID.
+
+
+### Response Parameter List:
+`id`: Optional[str] : Task ID.
+
+`batch`: Optional[int] : Batch Size.
+
+`checkpoints`: Optional[List[object]] : Checkpoints.
+
+`ctime`: Optional[str] : Task creation time.
+
+`dataset`: Optional[str] : Dataset name used by the task.
+
+`dataset_size`: Optional[int] : Dataset size
+
+`epoch`: Optional[int] : Epoch Number
+
+`lora_alpha`: Optional[int] : Lora alpha
+
+`lora_rank`: Optional[int] : Lora rank
+
+`lr`: Optional[int] : Learn Rate
+
+`mode`: Optional[str] : Fine_tuning mode used by the task.
+
+`model`: Optional[str] : Model name used by the task.
+
+`name`: Optional[str] : Task name.
+
+`namespace`: Optional[str] : Task namespace.
+
+`ngpu`: Optional[int] : Number of GPU.
+
+`priority`: Optional[int] : Task priority.
+
+`reason`: Optional[str] : Task fail reason.
+
+`seed`: Optional[int] : Random Seed
+
+`status`: Optional[str] : Task status.
+
+`test_dataset`: Optional[str] : Test dataset name used by the task.
+
+`test_dataset_size`: Optional[int] : Test dataset size
+
+`total_checkpoint`: Optional[int] : total checkpoint saved
+
+`version`: Optional[str] : Version String.
+
+---
+
+:arrow_right: Retrieve Logs for a Specific Fine-Tuning Task
+
+<code title="get /api/v1/fine_tuning/tasks/{id}/logs">client.fine_tuning.tasks.<a href="./src/krutrim_cloud/resources/fine_tuning/tasks.py">logs</a> -><a href="./src/krutrim_cloud/types/fine_tuning/task_retrieve_response.py"> TaskRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.fine_tuning import TaskRetrieveResponse
+```
+### Request Parameter List:
+`id`: Optional[str] : Task ID.
+
+### Response Parameter List:
+`idx`: Optional[int] : Index of the current log.
+
+`logs` : Optional[object] : Logs.
+
+`stage`: Optional[str] : Task stage.
+
+`task_name`: Optional[str] : Task Name.
+
+`ts`: Optional[str] : Timestampe.
+
+`user`: Optional[str] : User name.
+
+---
+
+:arrow_right: Cancel a Specific Fine-Tuning Task
+<code title="get /api/v1/fine_tuning/tasks/{id}/cancel">client.fine_tuning.tasks.<a href="./src/krutrim_cloud/resources/fine_tuning/tasks.py">cancel</a> -> None</code>
+
+### Request Parameter List:
+`id`: Optional[str] : Task ID.
+
+---
+
+## Inference a Model on Krutrim Cloud
+
+#### Methods:
+
+:arrow_right: List Fine-Tuning Checkpoints
+
+<code title="get /api/v1/fine_tuning/tasks">client.inference.checkpoints.<a href="./src/krutrim_cloud/resources/inference/checkpoints.py">list</a> -><a href="./src/krutrim_cloud/types/fine_tuning/checkpoint_list_response.py"> CheckpointListResponse</a></code>
+
+```python
+from krutrim_cloud.types.inference import CheckpointListResponse
+```
+
+### Response Parameter List:
+`model`: Optional[str] : Checkpoint name.
+
+`name`: Optional[str] : Checkpoint name.
+
+`version`: Optional[str] =: Checkpoint name.
+
+---
+
+:arrow_right: Get Inference Task Information
+
+<code title="get /api/v1/fine_tuning/tasks">client.inference.checkpoints.<a href="./src/krutrim_cloud/resources/inference/checkpoints.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/checkpoint_retrieve_response.py"> CheckpointRetrieveResponse</a></code>
+
+```python
+from krutrim_cloud.types.inference import CheckpointRetrieveResponse
+```
+### Request Parameter List:
+`filename`: str: Filename.
+
+### Response Parameter List:
+`ctime`: Optional[str] : Create time
+
+`dataset`: Optional[str] : dataset
+
+`epoch`: Optional[str] : Epoch
+
+`mode`: Optional[str] : mode
+
+`model`: Optional[str] : model
+
+`mtime`: Optional[str] : Last modified time
+
+`name`: Optional[str] : Check Points name
+
+`status`: Optional[str] : Check Points status
+
+`steps`: Optional[str] : steps
+
+`test_dataset`: Optional[str] : test-dataset
+
+
+---
+
+:arrow_right: Delete a Checkpoint
+
+<code title="get /api/v1/fine_tuning/tasks">client.inference.checkpoints.<a href="./src/krutrim_cloud/resources/inference/checkpoints.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/checkpoint_del_response.py"> CheckpointDelResponse</a></code>
+
+```python
+from krutrim_cloud.types.inference import CheckpointDelResponse
+```
+### Request Parameter List:
+`filename`: str: Filename.
+
+### Response Parameter List:
+`reason`: Optional[str] : Describe the error
+
+`uid`: Optional[str] : UID of the error
+
+---
+
+:arrow_right: Create Inference Task
+
+<code title="get /api/v1/fine_tuning/tasks">client.inference.tasks.<a href="./src/krutrim_cloud/resources/inference/tasks.py">create</a> -><a href="./src/krutrim_cloud/types/fine_tuning/task_create_response.py"> TaskCreateResponse</a></code>
+
+```python
+from krutrim_cloud.types.inference import TaskCreateResponse
+```
+### Request Parameter List:
+`argument`: str : additional argument to parse to inference engine
+
+`checkpoint`: str : Checkpoint name.
+
+`environ`: str: environment variable to parse to inference engine
+
+`max_batch_size`: int: max batch size
+
+`max_replicas`: int : Max number of replicas
+
+`min_replicas`: int : Min number of replicas
+
+`model`: str : Model name.
+
+`namespace`: str : Task Name.
+
+`ngpu`: int : Number of GPU to be used by the inference task.
+
+`path`: str : Checkpoint path.
+
+`priority`: int : Task priority.
+
+`s3_access_key`: str : S3 access key
+
+`s3_endpoint`: str : S3 endpoint
+
+`s3_region`: str : S3 region
+
+`s3_secret`: str : S3 secret
+
+### Response Parameter List:
+`id`: Optional[str] : Task ID.
+
+`name`: Optional[str] : Task name.
+
+
+---
+
+:arrow_right: List Inference Tasks
+
+<code title="get /api/v1/fine_tuning/tasks">client.inference.tasks.<a href="./src/krutrim_cloud/resources/inference/tasks.py">create</a> -><a href="./src/krutrim_cloud/types/fine_tuning/task_list_response.py"> TaskListResponse</a></code>
+
+```python
+from krutrim_cloud.types.inference import TaskListResponse
+```
+### Response Parameter List:
+`task_list`: Optional[List[object]] : Task List
+
+
+---
+
+:arrow_right: List Inference Tasks
+
+<code title="get /api/v1/fine_tuning/tasks">client.inference.tasks.<a href="./src/krutrim_cloud/resources/inference/tasks.py">retrieve</a> -><a href="./src/krutrim_cloud/types/fine_tuning/task_list_response.py"> TaskListResponse</a></code>
+
+```python
+from krutrim_cloud.types.inference import TaskListResponse
+```
+### Request Parameter List:
+`id`: Optional[str] : Task ID.
+
+### Response Parameter List:
+`id`: Optional[str] : Task ID.
+
+`basemodel`: Optional[str] : base model used by the task.
+
+`checkpoint`: Optional[str] : Checkpoints.
+
+`inference_svc_name`: Optional[str] : Inference service name.
+
+`name`: Optional[str] : Task name.
+
+`namespace`: Optional[str] : Task namespace.
+
+`priority`: Optional[int] : Task priority.
+
+`status`: Optional[str] : Task status.
+
+
+---
+:arrow_right: Cancel Inference Task
+
+<code title="get /api/v1/fine_tuning/tasks">client.inference.tasks.<a href="./src/krutrim_cloud/resources/inference/tasks.py">cancel</a> -> None</code>
+
+### Request Parameter List:
+`id`: Optional[str] : Task ID.
+
+---
+

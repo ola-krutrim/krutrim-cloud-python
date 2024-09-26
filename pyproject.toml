@@ -1,6 +1,6 @@
 [project]
 name = "krutrim_cloud"
-version = "0.5.0"
+version = "0.6.0"
 description = "The official Python library for the Krutrim Cloud API"
 readme = "README.md"
 license = {"file" = "LICENSE"}
@@ -21,7 +21,9 @@ dependencies = [
     "numpy>=2.1.0",
     "opencv-python>=4.10.0",
     "boto3>=1.35.8",
-    "moviepy>=1.0.3"
+    "moviepy>=1.0.3",
+    "jupyter>=1.1.1",
+    "notebook>=7.2.2"
 ]
 requires-python = ">= 3.7"
 classifiers = [

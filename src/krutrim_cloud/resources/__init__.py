@@ -52,6 +52,24 @@ from .videos import (
     AsyncVideosResourceWithStreamingResponse,
 )
 
+from .fine_tuning import (
+    FineTuningResource,
+    AsyncFineTuningResource,
+    FineTuningResourceWithRawResponse,
+    AsyncFineTuningResourceWithRawResponse,
+    FineTuningResourceWithStreamingResponse,
+    AsyncFineTuningResourceWithStreamingResponse,
+)
+
+from .inference import (
+    InferenceResource,
+    AsyncInferenceResource,
+    InferenceResourceWithRawResponse,
+    AsyncInferenceResourceWithRawResponse,
+    InferenceResourceWithStreamingResponse,
+    AsyncInferenceResourceWithStreamingResponse,
+)
+
 __all__ = [
     "ImagesResource",
     "AsyncImagesResource",
@@ -90,4 +108,16 @@ __all__ = [
     "AsyncVideosResourceWithRawResponse",
     "VideosResourceWithStreamingResponse",
     "AsyncVideosResourceWithStreamingResponse",
+    "FineTuningResource",
+    "AsyncFineTuningResource",
+    "FineTuningResourceWithRawResponse",
+    "AsyncFineTuningResourceWithRawResponse",
+    "FineTuningResourceWithStreamingResponse",
+    "AsyncFineTuningResourceWithStreamingResponse",
+    "InferenceResource",
+    "AsyncInferenceResource",
+    "InferenceResourceWithRawResponse",
+    "AsyncInferenceResourceWithRawResponse",
+    "InferenceResourceWithStreamingResponse",
+    "AsyncInferenceResourceWithStreamingResponse",
 ]

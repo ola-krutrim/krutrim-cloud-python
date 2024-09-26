@@ -51,11 +51,15 @@ class KrutrimCloud(SyncAPIClient):
     multimodal: resources.MultimodalResource
     audio: resources.AudioResource
     chat: resources.ChatResource
-    with_raw_response: KrutrimCloudWithRawResponse
-    with_streaming_response: KrutrimCloudWithStreamedResponse
     registry: resources.RegistryResource
     deploy: resources.DeployResource
     videos: resources.VideosResource
+    fine_tuning: resources.FineTuningResource
+    inference: resources.InferenceResource
+    with_raw_response: KrutrimCloudWithRawResponse
+    with_streaming_response: KrutrimCloudWithStreamedResponse
+
+
     # client options
 
     def __init__(
@@ -110,16 +114,18 @@ class KrutrimCloud(SyncAPIClient):
             custom_query=default_query,
             _strict_response_validation=_strict_response_validation,
         )
-
         self.images = resources.ImagesResource(self)
         self.multimodal = resources.MultimodalResource(self)
         self.audio = resources.AudioResource(self)
         self.chat = resources.ChatResource(self)
-        self.with_raw_response = KrutrimCloudWithRawResponse(self)
-        self.with_streaming_response = KrutrimCloudWithStreamedResponse(self)
         self.registry = resources.RegistryResource(self)
         self.deploy = resources.DeployResource(self)
         self.videos = resources.VideosResource(self)
+        self.fine_tuning = resources.FineTuningResource(self)
+        self.inference = resources.InferenceResource(self)
+        self.with_raw_response = KrutrimCloudWithRawResponse(self)
+        self.with_streaming_response = KrutrimCloudWithStreamedResponse(self)
+
 
     @property
     @override
@@ -230,10 +236,12 @@ class AsyncKrutrimCloud(AsyncAPIClient):
     multimodal: resources.AsyncMultimodalResource
     audio: resources.AsyncAudioResource
     chat: resources.AsyncChatResource
-    with_raw_response: AsyncKrutrimCloudWithRawResponse
-    with_streaming_response: AsyncKrutrimCloudWithStreamedResponse
     deploy: resources.AsyncDeployResource
     videos: resources.AsyncVideosResource
+    fine_tuning: resources.AsyncFineTuningResource
+    inference: resources.AsyncInferenceResource
+    with_raw_response: resources.AsyncKrutrimCloudWithRawResponse
+    with_streaming_response: resources.AsyncKrutrimCloudWithStreamedResponse
 
     # client options
 
@@ -294,10 +302,13 @@ class AsyncKrutrimCloud(AsyncAPIClient):
         self.multimodal = resources.AsyncMultimodalResource(self)
         self.audio = resources.AsyncAudioResource(self)
         self.chat = resources.AsyncChatResource(self)
-        self.with_raw_response = AsyncKrutrimCloudWithRawResponse(self)
-        self.with_streaming_response = AsyncKrutrimCloudWithStreamedResponse(self)
         self.deploy = resources.AsyncDeployResource(self)
         self.videos = resources.AsyncVideosResource(self)
+        self.fine_tuning = resources.AsyncFineTuningResource(self)
+        self.inference = resources.AsyncInferenceResource(self)
+        self.with_raw_response = resources.AsyncKrutrimCloudWithRawResponse(self)
+        self.with_streaming_response =resources. AsyncKrutrimCloudWithStreamedResponse(self)
+
 
     @property
     @override
@@ -409,6 +420,8 @@ class KrutrimCloudWithRawResponse:
         self.multimodal = resources.MultimodalResourceWithRawResponse(client.multimodal)
         self.audio = resources.AudioResourceWithRawResponse(client.audio)
         self.chat = resources.ChatResourceWithRawResponse(client.chat)
+        self.fine_tuning = resources.FineTuningResourceWithRawResponse(client.fine_tuning)
+        self.inference = resources.InferenceResourceWithRawResponse(client.inference)
 
 
 class AsyncKrutrimCloudWithRawResponse:
@@ -417,6 +430,8 @@ class AsyncKrutrimCloudWithRawResponse:
         self.multimodal = resources.AsyncMultimodalResourceWithRawResponse(client.multimodal)
         self.audio = resources.AsyncAudioResourceWithRawResponse(client.audio)
         self.chat = resources.AsyncChatResourceWithRawResponse(client.chat)
+        self.fine_tuning = resources.AsyncFineTuningResourceWithRawResponse(client.fine_tuning)
+        self.inference = resources.AsyncInferenceResourceWithRawResponse(client.inference)
 
 
 class KrutrimCloudWithStreamedResponse:
@@ -425,6 +440,8 @@ class KrutrimCloudWithStreamedResponse:
         self.multimodal = resources.MultimodalResourceWithStreamingResponse(client.multimodal)
         self.audio = resources.AudioResourceWithStreamingResponse(client.audio)
         self.chat = resources.ChatResourceWithStreamingResponse(client.chat)
+        self.fine_tuning = resources.FineTuningResourceWithStreamingResponse(client.fine_tuning)
+        self.inference = resources.InferenceResourceWithStreamingResponse(client.inference)
 
 
 class AsyncKrutrimCloudWithStreamedResponse:
@@ -433,6 +450,8 @@ class AsyncKrutrimCloudWithStreamedResponse:
         self.multimodal = resources.AsyncMultimodalResourceWithStreamingResponse(client.multimodal)
         self.audio = resources.AsyncAudioResourceWithStreamingResponse(client.audio)
         self.chat = resources.AsyncChatResourceWithStreamingResponse(client.chat)
+        self.fine_tuning = resources.AsyncFineTuningResourceWithStreamingResponse(client.fine_tuning)
+        self.inference = resources.AsyncInferenceResourceWithStreamingResponse(client.inference)
 
 
 Client = KrutrimCloud

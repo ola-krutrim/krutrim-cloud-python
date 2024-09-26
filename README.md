@@ -47,6 +47,10 @@ Model Inference: [Model Inference Examples](examples/models)
 
 Bring Your Own Model (BYOM): [Bring Your Own Model Notebook](examples/bring_your_own_model/bring_your_own_model.ipynb)
 
+Finetune LLM: [Finetune Notebook](examples/finetuning/finetuning.ipynb)
+
+Inference on Finetuned LLM: [Inference on Finetuned LLM Notebook](examples/inference/inference.ipynb)
+
 Resources directory: [Sample Resources](examples/resources)
 
 
