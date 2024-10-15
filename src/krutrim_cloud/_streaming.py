@@ -284,7 +284,9 @@ class SSEDecoder:
             try:
                 self._retry = int(value)
             except (TypeError, ValueError):
-                pass
+                pass  # Ignore TypeError and ValueError as not mandatory to validate
+            except Exception:
+                raise Exception("Error in decoding")
         else:
             pass  # Field is ignored.
 

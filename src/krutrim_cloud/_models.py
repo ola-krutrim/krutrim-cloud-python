@@ -440,38 +440,36 @@ def construct_type(*, value: object, type_: object) -> object:
         try:
             return validate_type(type_=cast("type[object]", type_), value=value)
         except Exception:
-            pass
+            # if the type is a discriminated union then we want to construct the right variant
+            # in the union, even if the data doesn't match exactly, otherwise we'd break code
+            # that relies on the constructed class types, e.g.
+            #
+            # class FooType:
+            #   kind: Literal['foo']
+            #   value: str
+            #
+            # class BarType:
+            #   kind: Literal['bar']
+            #   value: int
+            #
+            # without this block, if the data we get is something like `{'kind': 'bar', 'value': 'foo'}` then
+            # we'd end up constructing `FooType` when it should be `BarType`.
+            discriminator = _build_discriminated_union_meta(union=type_, meta_annotations=meta)
+            if discriminator and is_mapping(value):
+                variant_value = value.get(discriminator.field_alias_from or discriminator.field_name)
+                if variant_value and isinstance(variant_value, str):
+                    variant_type = discriminator.mapping.get(variant_value)
+                    if variant_type:
+                        return construct_type(type_=variant_type, value=value)
 
-        # if the type is a discriminated union then we want to construct the right variant
-        # in the union, even if the data doesn't match exactly, otherwise we'd break code
-        # that relies on the constructed class types, e.g.
-        #
-        # class FooType:
-        #   kind: Literal['foo']
-        #   value: str
-        #
-        # class BarType:
-        #   kind: Literal['bar']
-        #   value: int
-        #
-        # without this block, if the data we get is something like `{'kind': 'bar', 'value': 'foo'}` then
-        # we'd end up constructing `FooType` when it should be `BarType`.
-        discriminator = _build_discriminated_union_meta(union=type_, meta_annotations=meta)
-        if discriminator and is_mapping(value):
-            variant_value = value.get(discriminator.field_alias_from or discriminator.field_name)
-            if variant_value and isinstance(variant_value, str):
-                variant_type = discriminator.mapping.get(variant_value)
-                if variant_type:
-                    return construct_type(type_=variant_type, value=value)
+            # if the data is not valid, use the first variant that doesn't fail while deserializing
+            for variant in args:
+                try:
+                    return construct_type(value=value, type_=variant)
+                except Exception:
+                    continue
 
-        # if the data is not valid, use the first variant that doesn't fail while deserializing
-        for variant in args:
-            try:
-                return construct_type(value=value, type_=variant)
-            except Exception:
-                continue
-
-        raise RuntimeError(f"Could not convert data into a valid instance of {type_}")
+            raise RuntimeError(f"Could not convert data into a valid instance of {type_}")
 
     if origin == dict:
         if not is_mapping(value):

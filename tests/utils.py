@@ -102,7 +102,9 @@ def assert_matches_type(
         try:
             none_index = variants.index(type(None))
         except ValueError:
-            pass
+            pass  # ignore ValueError as not mandatory to validate 
+        except Exception:
+            raise Exception("Error in getting variant index")
         else:
             # special case Optional[T] for better error messages
             if len(variants) == 2:

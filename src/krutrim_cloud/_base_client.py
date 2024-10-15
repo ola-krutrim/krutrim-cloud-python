@@ -651,7 +651,9 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
             retry_ms_header = response_headers.get("retry-after-ms", None)
             return float(retry_ms_header) / 1000
         except (TypeError, ValueError):
-            pass
+            pass  # Ignore TypeError and ValueError as not mandatory to get retry-after-ms
+        except Exception:
+            raise Exception("Error occurred in parsing retry-after-ms from response_headers")
 
         # Next, try parsing `retry-after` header as seconds (allowing nonstandard floats).
         retry_header = response_headers.get("retry-after")
@@ -660,7 +662,9 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
             # but if someone sends a float there's no reason for us to not respect it
             return float(retry_header)
         except (TypeError, ValueError):
-            pass
+            pass  # Ignore TypeError and ValueError as not mandatory to get retry-after
+        except Exception:
+            raise Exception("Error occurred in parsing retry-after from response_headers")
 
         # Last, try parsing `retry-after` as a date.
         retry_date_tuple = email.utils.parsedate_tz(retry_header)
@@ -757,7 +761,7 @@ class SyncHttpxClientWrapper(DefaultHttpxClient):
         try:
             self.close()
         except Exception:
-            pass
+            raise Exception("Error in closing in __del__()")
 
 
 class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
@@ -1316,7 +1320,7 @@ class AsyncHttpxClientWrapper(DefaultAsyncHttpxClient):
             # TODO(someday): support non asyncio runtimes here
             asyncio.get_running_loop().create_task(self.aclose())
         except Exception:
-            pass
+            raise Exception("Error in asyncio runtime in __del__()")
 
 
 class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):

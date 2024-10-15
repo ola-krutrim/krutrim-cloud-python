@@ -88,5 +88,6 @@ for __name in __all__:
         try:
             __locals[__name].__module__ = "krutrim_cloud"
         except (TypeError, AttributeError):
-            # Some of our exported symbols are builtins which we can't set attributes for.
-            pass
+            pass  # Some of our exported symbols are builtins which we can't set attributes for.
+        except Exception:
+            raise Exception("Error in decoding exported symbols")
