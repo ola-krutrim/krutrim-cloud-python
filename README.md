@@ -51,6 +51,10 @@ Finetune LLM: [Finetune Notebook](examples/finetuning/finetuning.ipynb)
 
 Inference on Finetuned LLM: [Inference on Finetuned LLM Notebook](examples/inference/inference.ipynb)
 
+Bhashik Text : [Bhashik Text Examples](examples/text)
+
+Bhashik Speech : [Bhashik Speech Examples](examples/speech)
+
 Resources directory: [Sample Resources](examples/resources)
 
 

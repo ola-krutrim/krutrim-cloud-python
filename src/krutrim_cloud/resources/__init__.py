@@ -70,6 +70,16 @@ from .inference import (
     AsyncInferenceResourceWithStreamingResponse,
 )
 
+
+from .languagelabs import(
+   LanguageLabsResource,
+   AsyncLanguageLabsResource,
+   LanguageLabsResourceWithRawResponse,
+   AsyncLanguageLabsResourceWithRawResponse,
+   LanguageLabsResourceWithStreamingResponse,
+   AsyncLanguageLabsResourceWithStreamingResponse,
+)
+
 __all__ = [
     "ImagesResource",
     "AsyncImagesResource",
@@ -120,4 +130,10 @@ __all__ = [
     "AsyncInferenceResourceWithRawResponse",
     "InferenceResourceWithStreamingResponse",
     "AsyncInferenceResourceWithStreamingResponse",
+    "LanguageLabsResource",
+    "AsyncLanguageLabsResource",
+    "LanguageLabsResourceWithRawResponse",
+    "AsyncLanguageLabsResourceWithRawResponse",
+    "LanguageLabsResourceWithStreamingResponse",
+    "AsyncLanguageLabsResourceWithStreamingResponse",
 ]

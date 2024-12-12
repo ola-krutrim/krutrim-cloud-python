@@ -2,6 +2,7 @@ import base64
 from PIL import Image
 import io
 import os
+import time
 import cv2
 import numpy as np
 from datetime import datetime
@@ -9,6 +10,7 @@ from krutrim_cloud._exceptions import TimeRetrievalError, CouldNotDecodeError
 from pydub import AudioSegment  # type: ignore
 from pydub.exceptions import CouldntDecodeError  # type: ignore
 from moviepy.editor import ImageSequenceClip
+import requests
 
 
 def convert_base64_to_PIL_img(base64_data: str) -> Image.Image:
@@ -392,3 +394,153 @@ def save_video_clip(video_frames, output_dirpath: str, filename: str, fps=8) -> 
         clip.write_videofile(save_path, fps=fps)
     except OSError as e:
         raise OSError(f"Failed to save the video to '{save_path}': {e}")
+
+def encode_file_to_base64(file_path: str) -> str:
+    """
+    Encodes a file into a base64 string.
+
+    Args:
+        file_path (str): The path to the file to be encoded.
+
+    Returns:
+        str: The base64 encoded string of the file content.
+
+    Raises:
+        FileNotFoundError: If the file does not exist at the specified path.
+        OSError: If there is an error reading or encoding the file.
+
+    Example:
+        >>> base64_string = encode_file_to_base64("example.pdf")
+        >>> print(base64_string)
+    """
+    if not os.path.isfile(file_path):
+        raise FileNotFoundError(f"The file at '{file_path}' does not exist.")
+
+    try:
+        with open(file_path, "rb") as file:
+            file_content = file.read()
+            # Encode the file content to base64
+            encoded_string = base64.b64encode(file_content).decode("utf-8")
+        return encoded_string
+    except (OSError, ValueError) as e:
+        raise OSError(f"Error reading or encoding the file '{file_path}': {e}")
+    except Exception as e:
+        raise Exception(f"An unexpected error occurred while encoding the file: {e}")
+
+
+def save_audio_file(audio_file_download_url: str, output_dirpath: str, filename: str) -> None:
+    """
+    Download an audio file from the provided URL and save it to the specified directory with the given filename.
+
+    Args:
+        audio_file_download_url (str): The URL to download the audio file from.
+        output_dirpath (str): The directory path where the audio file will be saved.
+        filename (str): The name of the file to save the audio as.
+
+    Returns:
+        None
+
+    Raises:
+        ValueError: If the audio file cannot be downloaded.
+        OSError: If the audio file cannot be saved due to an OS-related error.
+
+    Example:
+        >>> save_audio_file("https://example.com/audio.mp3", "/path/to/save", "output.mp3")
+    """
+    try:
+        # Download the audio file
+        response = requests.get(audio_file_download_url, stream=True)
+        response.raise_for_status()  # Will raise an exception for non-2xx status codes
+    except requests.exceptions.RequestException as e:
+        raise ValueError(f"Error downloading audio file from URL '{audio_file_download_url}': {e}") from e
+
+    try:
+        # Create the output directory if it does not exist
+        os.makedirs(output_dirpath, exist_ok=True)
+    except OSError as e:
+        raise OSError(f"Failed to create directory '{output_dirpath}': {e}")
+
+    try:
+        # Save the audio file to the specified path
+        save_path = os.path.join(output_dirpath, filename)
+        with open(save_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        print(f"Audio file saved successfully to '{save_path}'")
+    except OSError as e:
+        raise OSError(f"Failed to save the audio file to '{save_path}': {e}")
+
+def poll_request_status(client, request_id: str, max_retries: int = 10, retry_delay: int = 10):
+    """
+    Poll the request status API to check when the request is complete and return the output file download link.
+
+    Args:
+        client (KrutrimCloud): The initialized KrutrimCloud client instance.
+        request_id (str): The unique request identifier returned by the initial API call.
+        max_retries (int): Maximum number of retries to check the request status.
+        retry_delay (int): Delay (in seconds) between retries.
+
+    Returns:
+        str: The download link for the output file if successful, None if the process failed.
+
+    Raises:
+        Exception: If the request status could not be fetched or if retries exceed max_retries.
+    """
+    retries = 0
+    while retries < max_retries:
+        try:
+            # Poll request status
+            status_response = client.languagelabs.job_status.run(
+                request_id=request_id
+            )
+
+            if status_response.status == "success":
+                status_data = status_response.data
+                if status_data.status == "SUCCESS":
+                    print(f"Request is complete.Output url available.")
+                    return status_data.output_file  # Return the output file download link
+                else:
+                    print(f"Request is still being processed. Retrying... (Attempt {retries + 1}/{max_retries})")
+            else:
+                print(f"Error in request status response: {status_response.status}")
+
+        except Exception as e:
+            print(f"Error fetching request status: {e}")
+
+        retries += 1
+        time.sleep(retry_delay)
+
+    print(f"Request processing took too long. Max retries reached.")
+    return None  # Return None if the process is not complete after max retries
+
+
+
+def get_transcribed_text_from_s3(s3_url: str) -> str:
+    """
+    Download the transcribed text from the provided S3 URL.
+
+    Args:
+        s3_url (str): The S3 URL pointing to the transcribed file.
+
+    Returns:
+        str: The content of the transcribed file.
+
+    Raises:
+        Exception: If there's an error downloading or reading the file.
+    """
+    try:
+        # Send a GET request to the S3 URL to download the file
+        response = requests.get(s3_url)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+
+            # Assuming the file is in plain text format
+            return response.text  # Returns the file content as a string
+
+        else:
+            raise Exception(f"Failed to download file from S3. Status code: {response.status_code}")
+
+    except Exception as e:
+        print(f"Error fetching transcribed text from S3: {e}")
+        raise

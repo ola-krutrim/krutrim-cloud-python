@@ -849,7 +849,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
             base_url=base_url,
             # cast to a valid type because mypy doesn't understand our type narrowing
             timeout=cast(Timeout, timeout),
-            proxies=proxies,
+            # proxies=proxies,
             transport=transport,
             limits=limits,
             follow_redirects=True,

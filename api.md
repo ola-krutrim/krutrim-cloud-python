@@ -1075,3 +1075,667 @@ from krutrim_cloud.types.inference import TaskListResponse
 
 ---
 
+# Bhashik Text Services
+
+# Language Detection
+
+Examples:
+
+---
+- **Language Detection**: [language_detection.py](./examples/text/language_detection.py) - This script contains the implementation of the Language Detection API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/language-detection">client.languagelabs.language_detection.<a href="./src/krutrim_cloud/resources/languagelabs/language_detection.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/language_detection_run_params.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/language_detection_response.py">LanguageDetectionResponse</a></code>
+
+```python
+from krutrim_cloud.types.language_detection_response import LanguageDetectionResponse
+```
+
+
+### Request Parameter List:
+
+`query`: str: Required parameter
+
+Example:
+```
+"Hey there, welcome to Language Labs" 
+
+```
+
+### Response Parameter List:
+
+`status`: str
+
+`data`: List[LanguageDetectionResult]
+
+        LanguageDetectionResult:
+        
+        `label`: str : Indicates the language type (e.g., "Primary Language", "Secondary Language")
+
+        `value`: str : Contains the detected language name and confidence percentage
+---
+
+
+
+# Entity Extraction
+
+Examples:
+
+---
+- **entity_extraction**: [entity_extraction.py](./examples/text/entity_extraction.py) - This script contains the implementation of the entity extraction API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/language-detection">client.languagelabs.entity_extraction.<a href="./src/krutrim_cloud/resources/languagelabs/language_detection.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/language_detection_run_params.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/language_detection_response.py">LanguageDetectionResponse</a></code>
+
+```python
+from krutrim_cloud.types.language_detection_response import LanguageDetectionResponse
+
+```
+### Request Parameter List:
+
+`text`: Required[str]
+
+     The text input from which entities need to be extracted.
+
+`param_list`:Required[List[str]]
+
+      A list specifying the types of entity extraction tasks.  
+- `ner`: Named Entity Recognition.  
+- `pii`: Personal Identifiable Information extraction.
+- `keywords` : Keywords Detection
+- `profanity` : Profanity Detection
+- `task_type` : Task Type Classification
+
+`lang_from`: Required[str]
+
+     The source language of the input text 
+
+Example:
+
+```
+"text": "मेरे मित्र राजेश कुमार, जिनका जन्म 5 मई 1985 को दिल्ली में हुआ था, अब बेंगलुरु में रहते हैं। उन्होंने
+    2010 में आईआईटी दिल्ली से कंप्यूटर विज्ञान में स्नातक की डिग्री प्राप्त की थी। राजेश
+    की पत्नी का नाम अंजलि है और उनके दो बच्चे हैं। राजेश एक सॉफ्टवेयर इंजीनियर के रूप में
+    इंफोसिस में काम करते हैं। उनका फोन नंबर 9876543210 है और उनका ईमेल पता
+    rajesh.kumar@example.com है। राजेश का पता 123, एमजी रोड, बेंगलुरु - 560001 है।",
+    
+    "param_list" : ["ner", "pii"],
+    
+    "lang_from" :"hin"
+
+```
+
+### Response Parameter List:
+
+`status`: str
+
+`data`: List[EntityExtractionData]
+
+        EntityExtractionData:
+        
+        `title`: str 
+
+        `color`: str
+
+        `data`: List[EntityExtractionItem]
+            
+            EntityExtractionItem:
+
+            `label`: str
+
+            `value`: str
+
+
+
+---
+
+# Summarization
+
+Examples:
+
+---
+- **Summarization**: [summarization.py](./examples/text/summarization.py) - This script contains the implementation of the Summarization API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/summarization">client.languagelabs.summarization.<a href="./src/krutrim_cloud/resources/languagelabs/summarization.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/summarization_run_params.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/summarization_response.py">SummarizationResponse</a></code>
+
+```python
+from krutrim_cloud.types.summarization_response import SummarizationResponse
+```
+
+
+### Request Parameter List:
+
+`text`: str: Required parameter : : The input text to summarize.
+
+`input_language`: str: Required parameter  : The language code of the input text (e.g., "eng" for English, "hin" for Hindi).
+
+`summary_size`: int: Required parameter
+
+Example:
+```
+"text": "Krutrim, a part of the Ola group, is working on creating the AI computing stack of the future.
+    We endeavor to deliver a state-of-the-art AI computing stack that encompasses the AI computing infrastructure,
+    AI Cloud, foundational models, and AI-powered end applications for the Indian market. Our envisioned AI computing
+    stack can empower consumers, startups, enterprises and scientists across India and the world to build their end
+    AI applications or AI models. While we are building foundational models across text, voice, and vision relevant to
+    our focus markets, we are also developing AI training and inference platforms that enable AI research and development
+    across industry domains. The platforms being built by Krutrim have the potential to impact millions of lives in India,
+    across income and education strata, and across languages. The team at Krutrim represents a convergence of talent across
+    AI research, Applied AI, Cloud Engineering, and semiconductor design. Our teams operate from three locations: Bangalore,
+    Singapore & San Francisco.",
+    
+    "input_language": "eng",
+    
+    "summary_size": 10 
+
+```
+
+### Response Parameter List:
+
+`status`: str
+
+`data`: Dict[str, str]
+
+---
+
+
+# Translation
+
+Examples:
+
+---
+- **translation**: [translation.py](./examples/text/translation.py) - This script contains the implementation of the translation API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/translation">client.languagelabs.translation.<a href="./src/krutrim_cloud/resources/languagelabs/translation.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/translation_run_params.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/translation_response.py">TranslationResponse</a></code>
+
+```python
+from krutrim_cloud.types.translation_response import TranslationResponse
+```
+
+
+### Request Parameter List:
+
+`text`: str: Required parameter : : The input text to translate.
+
+`src_language`: str: Required parameter  : The source language code(e.g., "eng" for English, "hin" for Hindi).
+
+`tgt_language`: int: Required parameter : The target language code(e.g., "eng" for English, "hin" for Hindi).
+
+`model`: str : optional : The translation model to use (default: "krutrim-translate-v1.0").
+
+Example:
+```
+   "text": "Krutrim, a part of the Ola group, is working on creating the AI computing stack of the future.
+    We endeavor to deliver a state-of-the-art AI computing stack that encompasses the AI computing infrastructure,
+    AI Cloud, foundational models, and AI-powered end applications for the Indian market.",
+    
+    "src_language": "eng_Latn",
+    
+    "tgt_language": "hin_Deva",
+    
+    "model": "krutrim-translate-v1.0"
+
+```
+
+### Response Parameter List:
+
+`status`: str
+
+`data`: Dict[str, str]
+
+---
+
+# Sentiment Analysis
+
+Examples:
+
+---
+- **sentiment_analysis**: [sentiment_analysis.py](./examples/text/sentiment_analysis.py) - This script contains the implementation of the sentiment_analysis API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/sentiment_analysis">client.languagelabs.sentiment_analysis.<a href="./src/krutrim_cloud/resources/languagelabs/sentiment_analysis.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/sentiment_analysis_run_params.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/sentiment_analysis_response.py">SentimentAnalysisResponse</a></code>
+
+```python
+from krutrim_cloud.types.sentiment_analysis_response import SentimentAnalysisResponse
+```
+
+
+### Request Parameter List:
+
+`text`: str: Required parameter : : The input text to analyze.
+
+`lang_from`: str: Required parameter  : The language of the input text(e.g., "eng" for English, "hin" for Hindi).
+
+
+Example:
+```
+   "text": "He felt a surge of joy as he watched the sunrise, painting the sky with vibrant hues of orange and pink.",
+   "lang_from": "eng"
+
+```
+
+### Response Parameter List:
+
+`status`: str : Indicates the status of the API call (e.g., "success" or "failure").
+
+`Sentiment`: List[Dict[str, List[str]]]
+
+---
+
+
+# Bhashik Speech Services
+
+
+# Text-To-Speech(TTS) API
+
+Examples:
+
+---
+- **text_to_speech**: [text_to_speech.py](./examples/speech/text_to_speech.py) - This script contains the implementation of the text_to_speech API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/tts">client.languagelabs.tts.<a href="./src/krutrim_cloud/resources/languagelabs/tts.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/text_to_speech_run_params.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/tts_run_response.py">TtsRunResponse</a></code>
+
+```python
+from krutrim_cloud.types.tts_run_response import TTSRunResponse
+```
+
+
+### Request Parameter List:
+
+`input_text`: str: Required parameter : : The text to be converted to speech.
+
+`input_language`: str: Required parameter  : The language of the input text (e.g., "eng" for English, "hin" for Hindi).
+
+`input_speaker`: int: Required parameter : The desired voice type for the audio output. Options include:
+"male"
+"female"
+
+Example:
+```
+    "input_text": "Major exports include petroleum products, textile goods, jewellery, software, engineering goods, chemicals, and manufactured leather goods.",
+    
+    "input_language": "eng",
+    
+    "input_speaker": "male"
+
+```
+
+### Response Parameter List:
+
+`status`: str : indicates the status of the API call (e.g., "success" or "failure").
+
+
+`data`: Dict[str, str] : Contains the generated audio file details
+    
+    audio_file: A downloadable link to the generated audio file.
+
+---
+
+
+# Text-To-Speech Translation(TTS Trans) API
+
+Examples:
+
+---
+- **text_to_speech_translation**: [text_to_speech_translation.py](./examples/speech/text_to_speech_translation.py) - This script contains the implementation of the text_to_speech_translation API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/tts_trans">client.languagelabs.tts_trans.<a href="./src/krutrim_cloud/resources/languagelabs/tts.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/text_to_speech_run_params.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/tts_trans_run_response.py">TtsTransRunResponse</a></code>
+
+```python
+from krutrim_cloud.types.tts_trans_run_response import TTSTransRunResponse
+```
+
+
+### Request Parameter List:
+
+`input_text`: str: Required parameter : : The text to be translated and converted to speech.
+
+`src_lang_code`: str: Required parameter  : The source language code (e.g., "eng" for English, "hin" for Hindi).
+
+`tgt_lang_code`: str: Required parameter  : The target language code(e.g., "eng" for English, "hin" for Hindi).
+
+`input_speaker`: int: Required parameter : The desired voice type for the audio output. Options include:
+"male"
+"female"
+
+Example:
+```
+    "input_text": "Who are you and how are you doing?",
+    
+    "src_lang_code": "eng",
+    
+    "tgt_lang_code": "hin",
+    
+    "input_speaker": "male"
+
+```
+
+### Response Parameter List:
+
+`status`: str : indicates the status of the API call (e.g., "success" or "failure").
+
+
+`data`: Dict[str, str] : Contains the generated audio file details
+    
+    audio_file: A downloadable link to the generated audio file.
+
+---
+
+
+# Speech-To-Text Transcribe(STT Transcribe) API
+
+Examples:
+
+---
+- **speech_to_text_transcribe**: [speech_to_text_transcribe.py](./examples/speech/speech_to_text_transcribe.py) - This script contains the implementation of the speech_to_text_transcribe API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/transcribe">client.languagelabs.transcribe.<a href="./src/krutrim_cloud/resources/languagelabs/transcribe.py">upload</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/transcribe.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/transcribe_upload_response.py">TranscribeUploadResponse</a></code>
+
+```python
+from krutrim_cloud.types.transcribe_upload_response import TranscribeUploadResponse
+```
+
+
+### Request Parameter List:
+
+`file`: (Required, file): The audio file to be transcribed. Replace <audio-file-path> with the local path to the audio file.
+
+`lang_code`: (Required, string): The language code for the audio. For example, use "eng" for English.
+
+
+Example:
+```
+    file=@"<audio-file-path>",
+    
+    'lang_code="eng"'
+   
+```
+
+### Response Parameter List:
+
+`status`: str : indicates the status of the API call (e.g., "success" or "failure").
+
+
+`data`: Dict[str, str] : Contains the transcribed text data.
+    
+    text: An array of transcribed text from the provided audio file.
+
+---
+
+
+
+
+# Speech-To-Text Translation(STT Translation) API
+
+Examples:
+
+---
+- **speech_to_text_translation**: [speech_to_text_translation.py](./examples/speech/speech_to_text_translation.py) - This script contains the implementation of the speech_to_text_translation API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/stt_trans">client.languagelabs.stt_trans.<a href="./src/krutrim_cloud/resources/languagelabs/stt_trans.py">upload</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/stt_trans.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/stt_trans_upload_response.py">SttTransUploadResponse</a></code>
+
+```python
+from krutrim_cloud.types.stt_trans_upload_response import SttTransUploadResponse
+```
+
+
+### Request Parameter List:
+
+`file`: (Required, file): The audio file to be transcribed and translated. Replace <audio-file-path> with the local path to the audio file.
+
+`src_lang_code`: (Required, string): The source language code of the audio. For example, use "eng" for English.
+
+`tgt_lang_code` : (Required, string): The target language code for the translation. For example, use "hin" for Hindi.
+
+
+Example:
+```
+    file=@"<audio-file-path>",
+    
+    src_lang_code="eng",
+    
+    tgt_lang_code="hin"
+   
+```
+
+### Response Parameter List:
+
+`status`: str : indicates the status of the API call (e.g., "success" or "failure").
+
+
+`data`: Dict[str, str] : Contains the translated text data.
+    
+    text: The translated text in the target language.
+
+---
+
+
+# Speech-To-Speech Translation(STS Translation) API
+
+Examples:
+
+---
+- **speech_to_speech_translation**: [speech_to_speech_translation.py](./examples/speech/speech_to_speech_translation.py) - This script contains the implementation of the speech_to_speech_translation API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/sts_trans">client.languagelabs.sts_trans.<a href="./src/krutrim_cloud/resources/languagelabs/sts_trans.py">upload</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/sts_trans.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/sts_trans_upload_response.py">StsTransUploadResponse</a></code>
+
+```python
+from krutrim_cloud.types.sts_trans_upload_response import StsTransUploadResponse
+```
+
+
+### Request Parameter List:
+
+`file`: (Required, file): The audio file to be transcribed and translated. Replace <audio-file-path> with the local path to the audio file.
+
+`src_lang_code`: (Required, string): The source language code of the audio. For example, use "eng" for English.
+
+`tgt_lang_code` : (Required, string): The target language code for the translation. For example, use "hin" for Hindi.
+
+`input_speaker`: (Optional, string): The speaker gender for the output audio. Options include "male" or "female".
+
+Example:
+```
+    file=@"<audio-file-path>",
+    
+    src_lang_code="eng",
+    
+    tgt_lang_code="hin"
+    
+    input_speaker="male
+   
+```
+
+### Response Parameter List:
+
+`status`: str : indicates the status of the API call (e.g., "success" or "failure").
+
+
+`data`: Dict[str, str] : Contains the output data
+    
+    audio_file: A link to download the translated speech audio file.
+
+---
+
+
+# Speech-To-Text Long Duration API(STT Long Duration ) API
+
+Examples:
+
+---
+- **speech_to_text_transcribe_large_files**: [speech_to_text_transcribe_large_files.ipynb](./examples/speech/speech_to_text_transcribe_large_files.ipynb) - This script contains the implementation of the speech_to_text_transcribe_large_files API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/transcribe_lf">client.languagelabs.transcribe_lf.<a href="./src/krutrim_cloud/resources/languagelabs/transcribe_lf.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/transcribe_lf.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/transcribe_lf_upload_response.py">TranscribeLfUploadResponse</a></code>
+
+```python
+from krutrim_cloud.types.transcribe_lf_upload_response import TranscribeLfUploadResponse
+```
+
+
+### Request Parameter List:
+
+`file`: (Required, file): The audio file to be transcribed. Replace <audio-file-path> with the local path to the audio file.
+
+`lang_code`: (Required, string): The language code for the audio. For example, use "eng" for English.
+
+
+Example:
+```
+    file=@"<audio-file-path>",
+    
+    'lang_code="eng"'
+   
+```
+
+### Response Parameter List:
+
+`status`: str : indicates the status of the API call (e.g., "success" or "failure").
+
+
+`data`: Dict[str, str] :Contains the output data
+    
+    request_id: A unique identifier for the request, used to track the transcription status.
+
+    status: The status of the request, typically "QUEUED" when the transcription is pending.
+
+---
+
+
+# Speech-To-Text Translation Long Duration API(STT Translation) API
+
+Examples:
+
+---
+- **speech_to_text_translation_large_files**: [speech_to_text_translation_large_files.ipynb](./examples/speech/speech_to_text_translation_large_files.ipynb) - This script contains the implementation of the speech_to_text_translation large files API.
+
+
+#### Methods:
+
+---
+
+:arrow_right: <code title="post /v1/languagelabs/stt_trans_lf">client.languagelabs.stt_trans_lf.<a href="./src/krutrim_cloud/resources/languagelabs/stt_trans_lf.py">run</a>(\*\*<a href="src/krutrim_cloud/types/languagelabs/stt_trans_lf.py">params</a>) -> <a href="./src/krutrim_cloud/types/languagelabs/stt_trans_lf_upload_response.py">SttTransLfUploadResponse</a></code>
+
+```python
+from krutrim_cloud.types.stt_trans_lf_upload_response import SttTransLfUploadResponse
+```
+
+
+### Request Parameter List:
+
+`file`: (Required, file): The audio file to be transcribed and translated. Replace <audio-file-path> with the local path to the audio file.
+
+`src_lang_code`: (Required, string): The source language code of the audio. For example, use "eng" for English.
+
+`tgt_lang_code` : (Required, string): The target language code for the translation. For example, use "hin" for Hindi.
+
+
+Example:
+```
+    file=@"<audio-file-path>",
+    
+    src_lang_code="eng",
+    
+    tgt_lang_code="hin"
+   
+```
+
+### Response Parameter List:
+
+`status`: str : indicates the status of the API call (e.g., "success" or "failure").
+
+
+`data`: Dict[str, str] : Contains the output data.
+    
+    request_id: A unique identifier for the request, used to track the transcription and translation status.
+
+    status: The status of the request, typically "QUEUED" when the process is pending.
+
+---
+
+
+# Get Status API
+
+The Get Status API is used to retrieve the status of a previously submitted request.
+It provides information about the request, including the processing status and download links for the output.
+
+# Response Details
+
+    status: Indicates the status of the API call (e.g., "success" or "failure").
+
+    data: Contains the output data.
+
+    request_id: A unique identifier for the request, used for tracking the status.
+
+    file_name: The name of the audio file that was processed.
+
+    file_size_mb: The size of the file in megabytes.
+
+    service_type: The type of service used for processing (e.g., "stttransservice" for speech-to-text translation).
+
+    status: The current status of the request (e.g., "SUCCESS", "QUEUED", etc.).
+
+    output_file: A link to download the output file (typically a .txt file with transcribed text).
+
+    created_at: The timestamp when the request was created.
+
+    updated_at: The timestamp when the request was last updated.
+
+```
+Note :
+
+The output_file provides a link to download the final output file once the request has been processed.
+You can track the progress of the request using the request_id and check its status for updates.
+
+```

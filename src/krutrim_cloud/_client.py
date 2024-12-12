@@ -55,6 +55,7 @@ class KrutrimCloud(SyncAPIClient):
     deploy: resources.DeployResource
     videos: resources.VideosResource
     fine_tuning: resources.FineTuningResource
+    languagelabs: resources.LanguageLabsResource
     inference: resources.InferenceResource
     with_raw_response: KrutrimCloudWithRawResponse
     with_streaming_response: KrutrimCloudWithStreamedResponse
@@ -123,6 +124,7 @@ class KrutrimCloud(SyncAPIClient):
         self.videos = resources.VideosResource(self)
         self.fine_tuning = resources.FineTuningResource(self)
         self.inference = resources.InferenceResource(self)
+        self.languagelabs = resources.LanguageLabsResource(self)
         self.with_raw_response = KrutrimCloudWithRawResponse(self)
         self.with_streaming_response = KrutrimCloudWithStreamedResponse(self)
 
@@ -240,8 +242,9 @@ class AsyncKrutrimCloud(AsyncAPIClient):
     videos: resources.AsyncVideosResource
     fine_tuning: resources.AsyncFineTuningResource
     inference: resources.AsyncInferenceResource
-    with_raw_response: resources.AsyncKrutrimCloudWithRawResponse
-    with_streaming_response: resources.AsyncKrutrimCloudWithStreamedResponse
+    languagelabs : resources.AsyncLanguageLabsResource
+    with_raw_response: AsyncKrutrimCloudWithRawResponse
+    with_streaming_response: AsyncKrutrimCloudWithStreamedResponse
 
     # client options
 
@@ -306,8 +309,9 @@ class AsyncKrutrimCloud(AsyncAPIClient):
         self.videos = resources.AsyncVideosResource(self)
         self.fine_tuning = resources.AsyncFineTuningResource(self)
         self.inference = resources.AsyncInferenceResource(self)
-        self.with_raw_response = resources.AsyncKrutrimCloudWithRawResponse(self)
-        self.with_streaming_response =resources. AsyncKrutrimCloudWithStreamedResponse(self)
+        self.languagelabs = resources.AsyncLanguageLabsResource(self)
+        self.with_raw_response = AsyncKrutrimCloudWithRawResponse(self)
+        self.with_streaming_response = AsyncKrutrimCloudWithStreamedResponse(self)
 
 
     @property
@@ -422,6 +426,7 @@ class KrutrimCloudWithRawResponse:
         self.chat = resources.ChatResourceWithRawResponse(client.chat)
         self.fine_tuning = resources.FineTuningResourceWithRawResponse(client.fine_tuning)
         self.inference = resources.InferenceResourceWithRawResponse(client.inference)
+        self.languagelabs = resources.LanguageLabsResourceWithRawResponse(client.languagelabs)
 
 
 class AsyncKrutrimCloudWithRawResponse:
@@ -432,6 +437,7 @@ class AsyncKrutrimCloudWithRawResponse:
         self.chat = resources.AsyncChatResourceWithRawResponse(client.chat)
         self.fine_tuning = resources.AsyncFineTuningResourceWithRawResponse(client.fine_tuning)
         self.inference = resources.AsyncInferenceResourceWithRawResponse(client.inference)
+        self.languagelabs = resources.AsyncLanguageLabsResourceWithRawResponse(client.languagelabs)
 
 
 class KrutrimCloudWithStreamedResponse:
@@ -442,6 +448,8 @@ class KrutrimCloudWithStreamedResponse:
         self.chat = resources.ChatResourceWithStreamingResponse(client.chat)
         self.fine_tuning = resources.FineTuningResourceWithStreamingResponse(client.fine_tuning)
         self.inference = resources.InferenceResourceWithStreamingResponse(client.inference)
+        self.languaglabs = resources.LanguageLabsResourceWithStreamingResponse(client.languagelabs)
+
 
 
 class AsyncKrutrimCloudWithStreamedResponse:
@@ -452,6 +460,8 @@ class AsyncKrutrimCloudWithStreamedResponse:
         self.chat = resources.AsyncChatResourceWithStreamingResponse(client.chat)
         self.fine_tuning = resources.AsyncFineTuningResourceWithStreamingResponse(client.fine_tuning)
         self.inference = resources.AsyncInferenceResourceWithStreamingResponse(client.inference)
+        self.languaglabs = resources.AsyncLanguageLabsResourceWithStreamingResponse(client.languagelabs)
+
 
 
 Client = KrutrimCloud
