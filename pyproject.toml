@@ -1,6 +1,6 @@
 [project]
 name = "krutrim_cloud"
-version = "0.7.0"
+version = "0.7.1"
 description = "The official Python library for the Krutrim Cloud API"
 readme = "README.md"
 license = {"file" = "LICENSE"}
@@ -25,13 +25,10 @@ dependencies = [
     "jupyter>=1.1.1",
     "notebook>=7.2.2",
 ]
-requires-python = ">= 3.7"
+requires-python = ">=3.10, <3.13"
 classifiers = [
   "Typing :: Typed",
   "Intended Audience :: Developers",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",

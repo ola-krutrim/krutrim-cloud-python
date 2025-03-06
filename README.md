@@ -2,8 +2,8 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/krutrim_cloud.svg)](https://pypi.org/project/krutrim_cloud/)
 
-The Krutrim Cloud Python library provides convenient access to the Krutrim Cloud REST API from any Python 3.7+
-application (3.10+ recommended). The library includes type definitions for all request params and response fields,
+The Krutrim Cloud Python library provides convenient access to the Krutrim Cloud REST API from any Python 3.10+
+application. The library includes type definitions for all request params and response fields,
 and offers both synchronous and asynchronous clients powered by [httpx](https://github.com/encode/httpx).
 
 It is generated with [Stainless](https://www.stainlessapi.com/).
@@ -15,6 +15,11 @@ By downloading or using this SDK, you agree to the terms as mentioned in [Krutri
 ## Documentation
 
 The full API of this library can be found in [api.md](api.md).
+
+## Requirements
+
+Python >=3.10, <3.13
+
 
 ## Installation
 
@@ -365,6 +370,3 @@ We take backwards-compatibility seriously and work hard to ensure you can rely o
 
 We are keen for your feedback; please open an [issue](https://github.com/ola-krutrim/krutrim-cloud-python/issues) with questions, bugs, or suggestions.
 
-## Requirements
-
-Python 3.7 or higher.
