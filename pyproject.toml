@@ -1,7 +1,7 @@
 [project]
 name = "krutrim_cloud"
-version = "0.7.1"
-description = "The official Python library for the Krutrim Cloud API"
+version = "0.7.2"
+description = "Official Krutrim Cloud AI Studio SDK (model inference, images, speech, fine-tuning). For Sandbox and infrastructure use krutrim-client."
 readme = "README.md"
 license = {"file" = "LICENSE"}
 authors = [
