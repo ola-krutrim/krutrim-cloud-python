@@ -21,11 +21,11 @@ The two packages are separate, actively maintained SDKs for different Krutrim Cl
 
 ## Terms of Use
 
-By downloading or using this SDK, you agree to the terms as mentioned in [Krutrim SDK License](KRUTRIM%20SDK%20LICENSE.md).
+By downloading or using this SDK, you agree to the terms as mentioned in [Krutrim SDK License](https://github.com/ola-krutrim/krutrim-cloud-python/blob/main/KRUTRIM%20SDK%20LICENSE.md).
 
 ## Documentation
 
-The full API of this library can be found in [api.md](api.md).
+The full API of this library can be found in [api.md](https://github.com/ola-krutrim/krutrim-cloud-python/blob/main/api.md).
 
 ## Requirements
 
@@ -59,24 +59,24 @@ To help you get started quickly with using our SDK and the hosted models on Krut
 a set of example scripts. These examples demonstrate how to use various features and functions of the SDK, 
 including how to interact with different models and perform inference.
 
-Model Inference: [Model Inference Examples](examples/models)
+Model Inference: [Model Inference Examples](https://github.com/ola-krutrim/krutrim-cloud-python/tree/main/examples/models)
 
-Bring Your Own Model (BYOM): [Bring Your Own Model Notebook](examples/bring_your_own_model/bring_your_own_model.ipynb)
+Bring Your Own Model (BYOM): [Bring Your Own Model Notebook](https://github.com/ola-krutrim/krutrim-cloud-python/blob/main/examples/bring_your_own_model/bring_your_own_model.ipynb)
 
-Finetune LLM: [Finetune Notebook](examples/finetuning/finetuning.ipynb)
+Finetune LLM: [Finetune Notebook](https://github.com/ola-krutrim/krutrim-cloud-python/blob/main/examples/finetuning/finetuning.ipynb)
 
-Inference on Finetuned LLM: [Inference on Finetuned LLM Notebook](examples/inference/inference.ipynb)
+Inference on Finetuned LLM: [Inference on Finetuned LLM Notebook](https://github.com/ola-krutrim/krutrim-cloud-python/blob/main/examples/inference/inference.ipynb)
 
-Bhashik Text : [Bhashik Text Examples](examples/text)
+Bhashik Text : [Bhashik Text Examples](https://github.com/ola-krutrim/krutrim-cloud-python/tree/main/examples/text)
 
-Bhashik Speech : [Bhashik Speech Examples](examples/speech)
+Bhashik Speech : [Bhashik Speech Examples](https://github.com/ola-krutrim/krutrim-cloud-python/tree/main/examples/speech)
 
-Resources directory: [Sample Resources](examples/resources)
+Resources directory: [Sample Resources](https://github.com/ola-krutrim/krutrim-cloud-python/tree/main/examples/resources)
 
 
 ## Usage
 
-The full API of this library can be found in [api.md](api.md).
+The full API of this library can be found in [api.md](https://github.com/ola-krutrim/krutrim-cloud-python/blob/main/api.md).
 
 ```python
 from krutrim_cloud import KrutrimCloud
