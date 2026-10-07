@@ -1,12 +1,23 @@
-# Krutrim Cloud Python API library
+# Krutrim AI Studio Python SDK (`krutrim-cloud`)
 
 [![PyPI version](https://img.shields.io/pypi/v/krutrim_cloud.svg)](https://pypi.org/project/krutrim_cloud/)
 
-The Krutrim Cloud Python library provides convenient access to the Krutrim Cloud REST API from any Python 3.10+
+The Krutrim Cloud Python library provides convenient access to the Krutrim Cloud **AI Studio** REST API from any Python 3.10+
 application. The library includes type definitions for all request params and response fields,
 and offers both synchronous and asynchronous clients powered by [httpx](https://github.com/encode/httpx).
 
 It is generated with [Stainless](https://www.stainlessapi.com/).
+
+> **Note:** This SDK covers AI Studio (model APIs) only. It does **not** support Sandbox, VMs, VPCs, storage, security groups, or AI Pods. For those, use the Core Infrastructure SDK, [`krutrim-client`](https://github.com/ola-krutrim/Krutrim-client-python) (`pip install krutrim-client`).
+
+## Which Python SDK should I use?
+
+| If you want to… | Use | Install | Import |
+|---|---|---|---|
+| Call AI Studio / model APIs — LLM inference, image generation, Bhashik speech & text, fine-tuning, Bring Your Own Model | **krutrim-cloud** | `pip install krutrim-cloud` | `from krutrim_cloud import KrutrimCloud` |
+| Manage Core Infrastructure — VPCs, VMs, volumes, SSH keys, security groups, floating IPs, AI Pods, **Sandbox** | **krutrim-client** | `pip install krutrim-client` | `from krutrim_client import KrutrimClient` |
+
+The two packages are separate, actively maintained SDKs for different Krutrim Cloud products, and they can be installed side by side. Neither replaces the other.
 
 ## Terms of Use
 
