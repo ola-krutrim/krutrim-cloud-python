@@ -1,6 +1,6 @@
 [project]
 name = "krutrim_cloud"
-version = "0.7.2"
+version = "0.7.3"
 description = "Official Krutrim Cloud AI Studio SDK (model inference, images, speech, fine-tuning). For Sandbox and infrastructure use krutrim-client."
 readme = "README.md"
 license = {"file" = "LICENSE"}
